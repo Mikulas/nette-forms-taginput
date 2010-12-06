@@ -30,16 +30,16 @@
 <body>
     <input type="text" class="tag-control" id="nette-form-tag-supertagga">
 	<ol>
-        <li>set proper value to original input</li>
-        <li>fix input tag-helper selectors</li>
+        <li>fix iterating through tags and input-helper</li>
 	    <li>objectify</li>
         <li>fix input tag-helper length</li>
+        <li>fix input tag-helper selectors</li>
 	</ol>
 	<script>
 	$(function() {
 //        $('input[type=tag]').hide();
         
-        $('input.tag-control[type=text]').each(function(index) {
+        $('input.tag-control').each(function(index) {
             $(this).parent().append('<span class="tag-control-container" for="' + $(this).attr('id')  + '"></span>');
             $control = $('.tag-control-container[for=' + $(this).attr('id') + ']'); // todo fixme
             $(this).appendTo($control);
@@ -47,7 +47,7 @@
             $control.prepend('<span class="tag-value"></span>');
         });        
         
-        $('input.tag-control-helper[type=text]').change(function() {
+        $('input.tag-control-helper').change(function() {
             $control = $(this).parent().children('.tag-value');
             $.each($(this).val().split(/[\s+,]+/), function(index, value) {
                 // &nbsp; fixes wrapping problem
@@ -56,7 +56,7 @@
                 }
             });
             $(this).val('');
-            $(this).siblings('input.tag-control[type=text]').updateValue();
+            $(this).siblings('input.tag-control').updateValue();
         });
         
         $('html').live('click', function(event) {
@@ -90,7 +90,7 @@
                     } else if ($control.prev().size() != 0) {
                         $control.prev().addClass('focus');
                     } else {
-                        $control.parent().siblings('input.tag-control-helper[type=text]').focus();
+                        $control.parent().siblings('input.tag-control-helper').focus();
                     }
                     $control.remove();
                 }
@@ -105,11 +105,7 @@
                 
                 normalized = $node.html().replace(/(&nbsp;\s+){2,}/g, '&nbsp; ').replace(/^&nbsp;\s+/, '');
                 $node.html(normalized);
-                console.log('update');
-                $node.siblings('input').each(function() {
-                    console.log($(this).attr('type'));
-                })
-                console.log('update done');
+                $node.siblings('input.tag-control').updateValue();
                 
             // pressed left or right key
             } else if (e.keyCode == 37 || e.keyCode == 39) {
@@ -124,7 +120,7 @@
                         }
                     } else {
                         if ($span.next().size() == 0) { // if most left
-                            $span.parent().siblings('input.tag-input-helper[type=text]').focus();
+                            $span.parent().siblings('input.tag-input-helper').focus();
                         } else {
                             $span.next().addClass('focus');
                         }
