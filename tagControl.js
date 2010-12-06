@@ -6,8 +6,11 @@ $('input.tag-control').each(function(index) {
     $(this).parent().append('<span class="tag-control-container" for="' + $(this).attr('id')  + '"></span>');
     $control = $('.tag-control-container[for=' + $(this).attr('id') + ']'); // todo fixme
     $(this).appendTo($control);
-    $control.append('<input type="text" class="tag-control-helper">');
     $control.prepend('<span class="tag-value"></span>');
+    $control.append('<input type="text" class="tag-control-helper">');
+    if ($(this).attr('disabled')) {
+	$control.children('.tag-control-helper').hide();
+    }
 });        
 
 $('input.tag-control-helper').change(function() {
