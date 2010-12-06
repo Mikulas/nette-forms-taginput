@@ -10,20 +10,21 @@ use Nette\String;
 class TagInput extends TextInput
 {
 
-	private $delimiter = '/[\s,]+/';
+	private $delimiter = '[\s,]+';
 
 
 
 	public function setDelimiter($delimiter)
 	{
 		$this->delimiter = $delimiter;
+		return $this;
 	}
 
 
 
 	public function getValue()
 	{
-		return String::split(parent::getValue(), $this->delimiter);
+		return String::split(parent::getValue(), "\x01" . $this->delimiter . "\x01");
 	}
 
 
@@ -36,6 +37,11 @@ class TagInput extends TextInput
 	{
 		$control = parent::getControl();
 		$control->class[] = "tag-control";
+
+		if ($this->delimiter !== NULL && String::trim($this->delimiter) !== '') {
+			$control->attrs['data-tag-delimiter'] = $this->delimiter;
+		}
+		
 		return $control;
 	}
 

@@ -39,6 +39,7 @@ $('html').live('click', function(event) {
     }
 
     if ($(event.target).is('.tag-control-container')) {
+	$(event.target).children('.tag-control-helper').focus();
         $(event.target).addClass('focus');
     } else {
 	$(event.target).parents('.tag-control-container').addClass('focus');
@@ -85,6 +86,7 @@ $('*').keydown(function(e) {
         normalized = $node.html().replace(/(&nbsp;\s+){2,}/g, '&nbsp; ').replace(/^&nbsp;\s+/, '');
         $node.html(normalized);
         $node.siblings('input.tag-control').updateValue();
+	return false;
         
     // pressed arrow key or tab
     } else if (e.keyCode >= 37 && e.keyCode <= 40) {
@@ -114,7 +116,15 @@ $('*').keydown(function(e) {
     // pressed tab
     } else if (e.keyCode == 9) {
 	$('.tag-control-container.focus').removeClass('focus');
+
+    // pressed enter
+    } else if (e.keyCode == 13) {
+	if ($('.tag-control-helper:focus').val().trim() != '') {
+	    $('.tag-control-helper:focus').change();
+	    return false;
+        }
     }
+
 }).keyup(function(e) {
     keylock = false;
 });
@@ -126,7 +136,7 @@ $('.tag-control-helper').live('focus', function() {
 
 
 // debug
-$('input.tag-control-helper').val('Vanoce Time 0 0 mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm').trigger('change');
+$('input.tag-control-helper').val('Vanoce Time Time consuming').trigger('change');
 });
 
 $.fn.updateValue = function() {
