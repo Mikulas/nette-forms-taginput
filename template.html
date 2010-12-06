@@ -28,16 +28,17 @@
 </head>
 
 <body>
-    <input type="text" class="tag-control" id="nette-form-tag-supertagga">
+    <input type="text" class="tag-control" id="nette-form-tag-supertagga" data-tag-delimiter="\s*[,]+\s*">
 	<ol>
-        <li>introduce support for custom delimiters</li>
         <li>tags longer then control width do not wrap property (at all)</li>
+        <li>add multi-select support</li>
         <li><strike>make item unique</strike> and validate this in php server-side</li>
         <li>(fixed?) fix input tag-helper selectors</li>
 	    <li>(really?) objectify</li>
 	</ol>
 	<script>
 	$(function() {
+	    var default_delimiter = /[\s,]+/;
         $('input.tag-control').hide();
         
         $('input.tag-control').each(function(index) {
@@ -50,7 +51,9 @@
         
         $('input.tag-control-helper').change(function() {
             $control = $(this).parent().children('.tag-value');
-            $.each($(this).val().split(/[\s+,]+/), function(index, value) {
+            $main = $(this).siblings('input.tag-control');
+            delimiter = $main.attr('data-tag-delimiter') == undefined ? default_delimiter : new RegExp($main.attr('data-tag-delimiter'));
+            $.each($(this).val().split(delimiter), function(index, value) {
                 // &nbsp; fixes wrapping problem
                 isUnique = true;
                 $control.children('span').each(function() {
@@ -63,7 +66,7 @@
                 }
             });
             $(this).val('');
-            $(this).siblings('input.tag-control').updateValue();
+            $main.updateValue();
         });
         
         $('html').live('click', function(event) {
