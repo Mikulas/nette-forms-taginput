@@ -64,6 +64,14 @@ class TagInput extends TextInput
 
 
 
+	public function  addRule($operation, $message = NULL, $arg = NULL)
+	{
+		throw new \NotImplementedException('');
+		parent::addRule($operation, $message, $arg);
+	}
+
+
+
 	/**
 	 * @param array $value
 	 * @return TagInput provides fluent interface
