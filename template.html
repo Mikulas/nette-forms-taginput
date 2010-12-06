@@ -30,8 +30,9 @@
 <body>
     <input type="text" class="tag-control" id="nette-form-tag-supertagga">
 	<ol>
-        <li>make item unique</li>
         <li>introduce support for custom delimiters</li>
+        <li>tags longer then control width do not wrap property (at all)</li>
+        <li><strike>make item unique</strike> and validate this in php server-side</li>
         <li>(fixed?) fix input tag-helper selectors</li>
 	    <li>(really?) objectify</li>
 	</ol>
@@ -51,7 +52,13 @@
             $control = $(this).parent().children('.tag-value');
             $.each($(this).val().split(/[\s+,]+/), function(index, value) {
                 // &nbsp; fixes wrapping problem
-                if (value.trim() != '') {
+                isUnique = true;
+                $control.children('span').each(function() {
+                    if (value == $(this).text()) {
+                        isUnique = false;
+                    }
+                });
+                if (value.trim() != '' && isUnique) {
                     $control.append('<span>' + value + '</span>&nbsp; ');
                 }
             });
@@ -138,7 +145,7 @@
         
         
         // debug
-        $('input.tag-control-helper').val('Vanoce Time 1 2 3 4 5 6 7 8 9 0').trigger('change');
+        $('input.tag-control-helper').val('Vanoce Time 0 0').trigger('change');
 	});
 	
     $.fn.updateValue = function() {
