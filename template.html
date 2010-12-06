@@ -21,16 +21,15 @@
     .tag-control-container {background: #FFF; padding: 3px; display: block; width: 300px; max-width: 300px;}
     .tag-control-container input.tag-control-helper {border: 0; width: 100%; border-top: 1px #A4BDED solid;}
     .tag-control-container input.tag-control-helper:focus {outline: none;}
-    .tag-control-container .tag-value span {background-color: #DEE7F8; -moz-border-radius: 9px; border-radius: 9px; padding: 0 1em 0 1em; border: 1px #A4BDED solid; line-height: 170%;}
+    .tag-control-container .tag-value span {background-color: #DEE7F8; -moz-border-radius: 9px; border-radius: 9px; padding: 0 1em 0 1em; border: 1px #A4BDED solid; line-height: 170%; word-wrap: break-word;}
     .tag-control-container .tag-value span:hover {background-color: #BBCEF1; border-color: #6D95E0;}
     .tag-control-container .tag-value span.focus {background-color: #598AEC; border-color: #598AEC; color: #FFF;}
     </style>
 </head>
 
 <body>
-    <input type="text" class="tag-control" id="nette-form-tag-supertagga" data-tag-delimiter="\s*[,]+\s*">
+    <input type="text" class="tag-control" id="nette-form-tag-supertagga" !data-tag-delimiter="\s*[,]+\s*">
 	<ol>
-        <li>tags longer then control width do not wrap property (at all)</li>
         <li>add multi-select support</li>
         <li><strike>make item unique</strike> and validate this in php server-side</li>
         <li>(fixed?) fix input tag-helper selectors</li>
@@ -148,7 +147,7 @@
         
         
         // debug
-        $('input.tag-control-helper').val('Vanoce Time 0 0').trigger('change');
+        $('input.tag-control-helper').val('Vanoce Time 0 0 mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm').trigger('change');
 	});
 	
     $.fn.updateValue = function() {
