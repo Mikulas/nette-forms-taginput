@@ -115,6 +115,8 @@ $('*').keydown(function(e) {
 
     // pressed tab
     } else if (e.keyCode == 9) {
+	$('.tag-control-container .tag-value span').removeClass('focus');
+	$('.tag-control-container.focus').children('input.tag-control-helper').focus();
 	$('.tag-control-container.focus').removeClass('focus');
 
     // pressed enter
@@ -136,7 +138,7 @@ $('.tag-control-helper').live('focus', function() {
 
 
 // debug
-$('input.tag-control-helper').val('Vanoce Time Time consuming').trigger('change');
+$('input.tag-control-helper').val($('input.tag-control-helper').siblings('input.tag-control').val()).trigger('change');
 });
 
 $.fn.updateValue = function() {
