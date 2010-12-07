@@ -21,12 +21,13 @@ $('input.tag-control-helper').change(function() {
         // &nbsp; fixes wrapping problem
         isUnique = true;
         $control.children('span').each(function() {
-            if (value == $(this).text()) {
+	    console.log($(this).getTagValue(), value);
+            if (value == $(this).getTagValue()) {
                 isUnique = false;
             }
         });
         if ($.trim(value) != '' && isUnique) {
-            $control.append('<span>' + value + '</span>&nbsp; ');
+            $control.append('<span>' + value + '<div class="delete">&times;</div></span>&nbsp; ');
         }
     });
     $(this).val('');
@@ -144,6 +145,10 @@ $('*').keydown(function(e) {
     keyDown = false;
 });
 
+$('.tag-control-container .tag-value span .delete').live('click', function() {
+	$(this).parent().remove();
+});
+
 
 $('.tag-control-helper').live('focus', function() {
     $(this).parent().addClass('focus');
@@ -157,8 +162,12 @@ $('input.tag-control-helper').val($('input.tag-control-helper').siblings('input.
 $.fn.updateValue = function() {
 	var value = [];
 	$(this).siblings('.tag-value').children('span').each(function() {
-		value.push($(this).text());
+		value.push($(this).getTagValue());
 	});
 	$(this).val(value.join(', '));
 	return $(this);
+}
+
+$.fn.getTagValue = function() {
+	return $(this).text().substr(0, $(this).text().length - 1); // fixme
 }
