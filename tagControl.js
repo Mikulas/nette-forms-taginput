@@ -49,13 +49,20 @@ $('html').live('click', function(event) {
     }
 });
 
-var keylock = false;
+var keyDown = false;
 $('*').keydown(function(e) {
-    if (keylock) {
+
+    // ignore if only shift was pressed
+    if (e.keyCode == 16) {
+	return;
+    }
+
+    if (keyDown != false) {
         return;
     }
-    keylock = true;
+    keyDown = e.keyCode;
     
+    console.log(e.keyCode);
     if (e.keyCode == 8 || e.keyCode == 46) { // backspace or delete
         // if input is focused and has value
         if ($('input.tag-control-helper:focus').size() != 0 && $('input.tag-control-helper:focus').val() != '') {
@@ -91,7 +98,7 @@ $('*').keydown(function(e) {
         $node.siblings('input.tag-control').updateValue();
 	return false;
         
-    // pressed arrow key or tab
+    // pressed arrow key
     } else if (e.keyCode >= 37 && e.keyCode <= 40) {
 	left = e.keyCode == 37 || e.keyCode == 38;
         $span = $('.tag-control-container .tag-value span.focus');
@@ -131,7 +138,7 @@ $('*').keydown(function(e) {
     }
 
 }).keyup(function(e) {
-    keylock = false;
+    keyDown = false;
 });
 
 
