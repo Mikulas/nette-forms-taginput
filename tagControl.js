@@ -148,8 +148,11 @@ $('.tag-control-helper').live('focus', function() {
 })
 
 
-// debug
-$('input.tag-control-helper').val($('input.tag-control-helper').siblings('input.tag-control').val()).trigger('change');
+// set defaults
+$('input.tag-control-helper').each(function() {
+	$(this).val($(this).siblings('input.tag-control').val()).trigger('change');
+});
+
 });
 
 $.fn.updateValue = function() {
