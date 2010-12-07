@@ -25,7 +25,8 @@ $('input.tag-control-helper').change(function() {
                 isUnique = false;
             }
         });
-        if (value.trim() != '' && isUnique) {
+	console.log(value);
+        if ($.trim(value) != '' && isUnique) {
             $control.append('<span>' + value + '</span>&nbsp; ');
         }
     });
@@ -124,7 +125,7 @@ $('*').keydown(function(e) {
 
     // pressed enter
     } else if (e.keyCode == 13) {
-	if ($('.tag-control-helper:focus').val().trim() != '') {
+	if ($.trim($('.tag-control-helper:focus').val()) != '') {
 	    $('.tag-control-helper:focus').change();
 	    return false;
         }
