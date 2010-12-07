@@ -62,7 +62,6 @@ $('*').keydown(function(e) {
     }
     keyDown = e.keyCode;
     
-    console.log(e.keyCode);
     if (e.keyCode == 8 || e.keyCode == 46) { // backspace or delete
         // if input is focused and has value
         if ($('input.tag-control-helper:focus').size() != 0 && $('input.tag-control-helper:focus').val() != '') {
