@@ -18,15 +18,8 @@ $('input.tag-control-helper').change(function() {
     $main = $(this).siblings('input.tag-control');
     delimiter = $main.attr('data-tag-delimiter') == undefined ? default_delimiter : new RegExp($main.attr('data-tag-delimiter'));
     $.each($(this).val().split(delimiter), function(index, value) {
-        // &nbsp; fixes wrapping problem
-        isUnique = true;
-        $control.children('span').each(function() {
-	    console.log($(this).getTagValue(), value);
-            if (value == $(this).getTagValue()) {
-                isUnique = false;
-            }
-        });
-        if ($.trim(value) != '' && isUnique) {
+        if ($.trim(value) != '') {
+	    // &nbsp; fixes wrapping problem
             $control.append('<span>' + value + '<div class="delete">&times;</div></span>&nbsp; ');
         }
     });
