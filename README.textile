@@ -5,18 +5,20 @@ h1. TagControl
 
 h2. Example
 
-!http://files.droplr.com/files/71192952/RnLD.Screen%20shot%202010-12-06%20at%2022%3A16%3A52.png!
+Online demo at http://mikulasdite.github.com/TagControl/
+!http://files.droplr.com/files/71192952/z9xu.Screen%20shot%202010-12-07%20at%2018%3A31%3A49.png!
 
 h2. Requirements
 
-Nette2.0-alpha, jQuery1.4+
+* Nette2.0-alpha - https://nette.org/
+* jQuery1.4+ - http://jquery.com/
 
 h2. Usage
 
 Put `tagControl.css` and `tagControl.js` to public directory and link them to the layout. For example, you might use:
 
 bc.    <link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/css/tagControl.css" type="text/css">
-    <script type="text/javascript" src="{$basePath}/js/tagControl.js"></script>
+        <script type="text/javascript" src="{$basePath}/js/tagControl.js"></script>
 
 then, insert `TagInput.php` anywhere your RobotLoader looks for classes. In your `BasePresenter.php::startup()` register this component with:
 
