@@ -25,7 +25,6 @@ $('input.tag-control-helper').change(function() {
                 isUnique = false;
             }
         });
-	console.log(value);
         if ($.trim(value) != '' && isUnique) {
             $control.append('<span>' + value + '</span>&nbsp; ');
         }
