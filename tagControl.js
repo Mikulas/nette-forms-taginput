@@ -118,10 +118,14 @@ $('*').keydown(function(e) {
             }
             $span.removeClass('focus');
         } else if (left) {
-            $('input.tag-control-helper:focus').siblings('.tag-value').children('span' + left ? ':last' : ':first').addClass('focus');
-            $('input.tag-control-helper:focus').blur();
+	    if ($.trim($('input.tag-control-helper:focus').val()) == '') {
+		$('input.tag-control-helper:focus').siblings('.tag-value').children('span' + left ? ':last' : ':first').addClass('focus');
+		$('input.tag-control-helper:focus').blur();
+	    } else {
+		return true;
+	    }
         }
-        return false;
+        //return false;
 
     // pressed tab
     } else if (e.keyCode == 9) {
