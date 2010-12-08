@@ -181,7 +181,9 @@ $.fn.getTagValue = function() {
 
 $.fn.fillToParent = function() {
 	$(this).css('width', 0);
-	$(this).css('width', $(this).parent().width() - $(this).position()['left'] + 20);
+	width = $(this).parent().width() - $(this).position()['left'];
+	width = width < 50 ? 50 : width;
+	$(this).css('width', width);
 	return $(this);
 };
 
