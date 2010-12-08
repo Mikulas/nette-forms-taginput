@@ -20,7 +20,7 @@ $('input.tag-control-helper').change(function() {
     delimiter = $main.attr('data-tag-delimiter') == undefined ? default_delimiter : new RegExp($main.attr('data-tag-delimiter'));
     $.each($(this).val().split(delimiter), function(index, value) {
         if ($.trim(value) != '') {
-            $control.append('<span>' + value + '<div class="delete">&times;</div></span><wbt>');
+            $control.append('<span>' + value + '<div class="delete">&times;</div></span><wbr>');
         }
     });
 
@@ -67,7 +67,8 @@ $('*').keydown(function(e) {
         
         $control = $('.tag-control-container .tag-value span.focus');
         $node = $control.parent();
-        
+
+	// todo caret condition here
         if ($control.size() != 0) {
             // if element on right exists
             if ($control.next().size() != 0) {
@@ -78,7 +79,10 @@ $('*').keydown(function(e) {
             } else {
                 $control.parent().siblings('input.tag-control-helper').focus();
             }
-            $control.remove();
+	    // remove next <wbr>
+	    $control.next().remove();
+
+	    $control.remove();
         }
         
         // if in empty focused input, remove last tag on backspace
@@ -87,13 +91,7 @@ $('*').keydown(function(e) {
             $node = $('input.tag-control-helper:focus').siblings('.tag-value');
         }
         
-        // normalize count of &nbsp;
-        
-        normalized = $node.html().replace(/(&nbsp;\s+){2,}/g, '&nbsp; ').replace(/^&nbsp;\s+/, '');
-        $node.html(normalized);
-        $node.siblings('input.tag-control').updateValue();
-
-	$node.siblings('input.tag-control-helper').fillToParent();
+        $node.siblings('input.tag-control-helper').fillToParent();
 	return false;
         
     // pressed arrow key
