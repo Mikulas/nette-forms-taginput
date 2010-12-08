@@ -3,8 +3,8 @@
 .tag-control-container input.tag-control-helper {border: 0;}
 .tag-control-container input.tag-control-helper:focus {outline: none;}
 .tag-control-container .tag-value span {background-color: #DEE7F8; -moz-border-radius: 9px; border-radius: 9px; margin: 0 0.5em 0 0; padding: 0 10px 0 10px; border: 1px #A4BDED solid; line-height: 170%; word-wrap: break-word;}
-.tag-control-container .tag-value span:hover {background-color: #BBCEF1; border-color: #6D95E0; cursor: default;}
+.tag-control-container .tag-value span:hover {background-color: #BBCEF1; border-color: #6D95E0; cursor: default; padding: 0 15px 0 5px;}
 .tag-control-container .tag-value span.focus {background-color: #598AEC; border-color: #598AEC; color: #FFF;}
-.tag-control-container .tag-value span .delete {display: none; margin-left: 0.5em;}
+.tag-control-container .tag-value span .delete {display: none; margin-left: 4px; margin-right: -13px;}
 .tag-control-container .tag-value span:hover .delete {display: inline;}
 .tag-control-container .tag-value span:hover .delete:hover {cursor: pointer;}
