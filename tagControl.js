@@ -58,7 +58,7 @@ $('*').keydown(function(e) {
         return;
     }
     keyDown = e.keyCode;
-    
+console.log(e.keyCode);
     if (e.keyCode == 8 || e.keyCode == 46) { // backspace or delete
         // if input is focused and has value
         if ($('input.tag-control-helper:focus').size() != 0 && $('input.tag-control-helper:focus').val() != '') {
@@ -102,27 +102,29 @@ $('*').keydown(function(e) {
         $span = $('.tag-control-container .tag-value span.focus');
         if ($span.size() != 0) { // if any tag is focused
             if (left) {
-                if ($span.prev().size() == 0) { // if not most left
+                if ($span.prev().prev().size() == 0) { // if not most left
                     return;
                 } else {
-                    $span.prev().addClass('focus');
+                    $span.prev().prev().addClass('focus');
                 }
             } else {
-                if ($span.next().size() == 0) { // if most right
+                if ($span.next().next().size() == 0) { // if most right
                     $span.parent().siblings('input.tag-control-helper').focus();
                 } else {
-                    $span.next().addClass('focus');
+                    $span.next().next().addClass('focus');
                 }
             }
             $span.removeClass('focus');
         } else if (left) {
 	    if ($.trim($('input.tag-control-helper:focus').val()) == '') {
-		$('input.tag-control-helper:focus').siblings('.tag-value').children('span' + left ? ':last' : ':first').addClass('focus');
+		$('input.tag-control-helper:focus').siblings('.tag-value').children('span').filter(left ? ':last' : ':first').addClass('focus');
 		$('input.tag-control-helper:focus').blur();
 	    } else {
 		return true;
 	    }
         }
+	// add trigger on change /------- -/-/  /------- -/-/  /------- -/-/  /------- -/-/  /------- -/-/  /------- -/-/  /------- -/-/  /------- -/-/  /------- -/-/  /------- -/-/  /------- -/-/ 
+
         //return false;
 
     // pressed tab
