@@ -14,15 +14,18 @@ $('input.tag-control').each(function(index) {
 });        
 
 $('input.tag-control-helper').change(function() {
+    $(this).css('width', $(this).css('min-width'));
     $control = $(this).parent().children('.tag-value');
     $main = $(this).siblings('input.tag-control');
     delimiter = $main.attr('data-tag-delimiter') == undefined ? default_delimiter : new RegExp($main.attr('data-tag-delimiter'));
     $.each($(this).val().split(delimiter), function(index, value) {
         if ($.trim(value) != '') {
-	    // &nbsp; fixes wrapping problem
-            $control.append('<span>' + value + '<div class="delete">&times;</div></span>&nbsp; ');
+            $control.append('<span>' + value + '<div class="delete">&times;</div></span><wbt>');
         }
     });
+
+    $(this).fillToParent();
+
     $(this).val('');
     $main.updateValue();
 });
@@ -89,6 +92,8 @@ $('*').keydown(function(e) {
         normalized = $node.html().replace(/(&nbsp;\s+){2,}/g, '&nbsp; ').replace(/^&nbsp;\s+/, '');
         $node.html(normalized);
         $node.siblings('input.tag-control').updateValue();
+
+	$node.siblings('input.tag-control-helper').fillToParent();
 	return false;
         
     // pressed arrow key
@@ -166,4 +171,9 @@ $.fn.updateValue = function() {
 
 $.fn.getTagValue = function() {
 	return $(this).text().substr(0, $(this).text().length - 1); // fixme
+}
+
+$.fn.fillToParent = function() {
+	$(this).css('width', $(this).parent().width() - $(this).position()['left'] + 20);
+	return $(this);
 }
