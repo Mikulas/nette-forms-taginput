@@ -1,6 +1,6 @@
 .tag-control-container {font-family: LucidaGrande; font-size: 11px; background: #FFF; padding: 3px; display: block; width: 300px; max-width: 300px; border: 1px solid darkgray;}
 .tag-control-container.focus {border: 1px solid activeborder; outline: 2px auto -webkit-focus-ring-color;}
-.tag-control-container input.tag-control-helper {border: 0; display: inline; margin: 0; padding: 0;}
+.tag-control-container input.tag-control-helper {border: 0; display: inline; margin: 0; padding: 0; background-color: red;}
 .tag-control-container input.tag-control-helper:focus {outline: none;}
 .tag-control-container .tag-value span {background-color: #DEE7F8; -moz-border-radius: 9px; border-radius: 9px; margin: 0 0.5em 0 0; padding: 0 10px 0 10px; border: 1px #A4BDED solid; line-height: 170%; word-wrap: break-word;}
 .tag-control-container .tag-value span:hover {background-color: #BBCEF1; border-color: #6D95E0; cursor: default; padding: 0 15px 0 5px;}

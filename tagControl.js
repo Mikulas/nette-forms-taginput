@@ -144,7 +144,8 @@ $('*').keydown(function(e) {
     keyDown = false;
     
     // tag ended
-    if ($('.tag-control-helper:focus').size() != 0 && $('.tag-control-helper:focus').val().match($('.tag-control-helper:focus').siblings('.tag-control').attr('data-tag-delimiter') == undefined ? default_delimiter : new RegExp($main.attr('data-tag-delimiter')))) {
+    regex = $('.tag-control-helper:focus').siblings('.tag-control').attr('data-tag-delimiter') == undefined ? default_delimiter : new RegExp($main.attr('data-tag-delimiter'));
+    if ($('.tag-control-helper:focus').size() != 0 && $('.tag-control-helper:focus').val().match(regex) != null) {
 	$('.tag-control-helper:focus').change();
     }
 });
