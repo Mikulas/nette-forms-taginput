@@ -58,7 +58,7 @@ $('*').keydown(function(e) {
         return;
     }
     keyDown = e.keyCode;
-console.log(e.keyCode);
+    
     if (e.keyCode == 8 || e.keyCode == 46) { // backspace or delete
         // if input is focused and has value
         if ($('input.tag-control-helper:focus').size() != 0 && $('input.tag-control-helper:focus').val() != '') {
@@ -101,22 +101,23 @@ console.log(e.keyCode);
 	left = e.keyCode == 37 || e.keyCode == 38;
         $span = $('.tag-control-container .tag-value span.focus');
         if ($span.size() != 0) { // if any tag is focused
-            if (left) {
+	    if (left) {
                 if ($span.prev().prev().size() == 0) { // if not most left
-                    return;
+                    return false;
                 } else {
                     $span.prev().prev().addClass('focus');
                 }
             } else {
                 if ($span.next().next().size() == 0) { // if most right
-                    $span.parent().siblings('input.tag-control-helper').focus();
+		    $span.parent().siblings('input.tag-control-helper').focus();
                 } else {
                     $span.next().next().addClass('focus');
                 }
             }
-            $span.removeClass('focus');
+	    $span.removeClass('focus');
+	    return false;
         } else if (left) {
-	    if ($.trim($('input.tag-control-helper:focus').val()) == '') {
+	    if ($('input.tag-control-helper:focus').getCaret() == 0) {
 		$('input.tag-control-helper:focus').siblings('.tag-value').children('span').filter(left ? ':last' : ':first').addClass('focus');
 		$('input.tag-control-helper:focus').blur();
 	    } else {
@@ -169,13 +170,25 @@ $.fn.updateValue = function() {
 	});
 	$(this).val(value.join(', '));
 	return $(this);
-}
+};
 
 $.fn.getTagValue = function() {
 	return $(this).text().substr(0, $(this).text().length - 1); // fixme
-}
+};
 
 $.fn.fillToParent = function() {
 	$(this).css('width', $(this).parent().width() - $(this).position()['left'] + 20);
 	return $(this);
+};
+
+
+$.fn.getCaret = function(pos) {
+    if ($(this).get(0).createTextRange) {
+        var r = document.selection.createRange().duplicate();
+        r.moveEnd('character', o.value.length);
+        if (r.text == '') return $(this).get(0).value.length
+        return $(this).get(0).value.lastIndexOf(r.text);
+    } else {
+	return $(this).get(0).selectionStart;
+    }
 }
