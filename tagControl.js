@@ -60,8 +60,8 @@ $('*').keydown(function(e) {
     keyDown = e.keyCode;
     
     if (e.keyCode == 8 || e.keyCode == 46) { // backspace or delete
-        // if input is focused and has value
-        if ($('input.tag-control-helper:focus').size() != 0 && $('input.tag-control-helper:focus').val() != '') {
+        // if input is focused and caret is most left
+        if ($('input.tag-control-helper:focus').size() != 0 && $('input.tag-control-helper:focus').getCaret() != 0) {
             return;
         }
         
@@ -71,25 +71,25 @@ $('*').keydown(function(e) {
 	// todo caret condition here
         if ($control.size() != 0) {
             // if element on right exists
-            if ($control.next().size() != 0) {
-                $control.next().addClass('focus');
+            if ($control.next().next().size() != 0) {
+                $control.next().next().addClass('focus');
                 // else if element on left exists
-            } else if ($control.prev().size() != 0) {
-                $control.prev().addClass('focus');
+            } else if ($control.prev().prev().size() != 0) {
+                $control.prev().prev().addClass('focus');
             } else {
                 $control.parent().siblings('input.tag-control-helper').focus();
             }
-	    // remove next <wbr>
-	    $control.next().remove();
-
-	    $control.remove();
         }
         
         // if in empty focused input, remove last tag on backspace
         if (e.keyCode == 8 && $('input.tag-control-helper:focus').size() != 0) {
-            $('input.tag-control-helper:focus').siblings('.tag-value').children('span:last').remove();
+            $control = $('input.tag-control-helper:focus').siblings('.tag-value').children('span:last');
             $node = $('input.tag-control-helper:focus').siblings('.tag-value');
         }
+
+	// remove next <wbr>
+	$control.next().remove();
+	$control.remove();
         
         $node.siblings('input.tag-control-helper').fillToParent();
 	return false;
@@ -115,7 +115,7 @@ $('*').keydown(function(e) {
 	    $span.removeClass('focus');
 	    return false;
         } else if (left) {
-	    if ($('input.tag-control-helper:focus').getCaret() == 0) {
+	    if ($('input.tag-control-helper:focus').size != 0 && $('input.tag-control-helper:focus').getCaret() == 0) {
 		$('input.tag-control-helper:focus').siblings('.tag-value').children('span').filter(left ? ':last' : ':first').addClass('focus');
 		$('input.tag-control-helper:focus').blur();
 	    } else {
@@ -144,7 +144,7 @@ $('*').keydown(function(e) {
     keyDown = false;
     
     // tag ended
-    if ($('.tag-control-helper:focus').val().match($('.tag-control-helper:focus').siblings('.tag-control').attr('data-tag-delimiter') == undefined ? default_delimiter : new RegExp($main.attr('data-tag-delimiter')))) {
+    if ($('.tag-control-helper:focus').size() != 0 && $('.tag-control-helper:focus').val().match($('.tag-control-helper:focus').siblings('.tag-control').attr('data-tag-delimiter') == undefined ? default_delimiter : new RegExp($main.attr('data-tag-delimiter')))) {
 	$('.tag-control-helper:focus').change();
     }
 });
