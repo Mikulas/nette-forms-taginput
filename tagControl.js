@@ -142,6 +142,11 @@ $('*').keydown(function(e) {
 
 }).keyup(function(e) {
     keyDown = false;
+    
+    // tag ended
+    if ($('.tag-control-helper:focus').val().match($('.tag-control-helper:focus').siblings('.tag-control').attr('data-tag-delimiter') == undefined ? default_delimiter : new RegExp($main.attr('data-tag-delimiter')))) {
+	$('.tag-control-helper:focus').change();
+    }
 });
 
 $('.tag-control-container .tag-value span .delete').live('click', function() {
