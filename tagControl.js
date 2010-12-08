@@ -180,6 +180,8 @@ $.fn.getTagValue = function() {
 };
 
 $.fn.fillToParent = function() {
+	console.log('called');
+	$(this).css('width', 0);
 	$(this).css('width', $(this).parent().width() - $(this).position()['left'] + 20);
 	return $(this);
 };
