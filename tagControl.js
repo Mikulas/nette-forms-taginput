@@ -90,6 +90,8 @@ $(function() {
 			// remove next <wbr>
 			$control.next().remove();
 			$control.remove();
+
+			$node.siblings('input.tag-control').updateValue();
         
 			$node.siblings('input.tag-control-helper').fillToParent();
 			return false;
