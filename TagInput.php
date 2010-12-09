@@ -19,6 +19,7 @@ class TagInput extends TextInput
 	const UNIQUE = ':unique';
 
 
+
 	/** @var string regex */
 	private $delimiter = '[\s,]+';
 
@@ -64,20 +65,6 @@ class TagInput extends TextInput
 
 
 
-	public function addRule($operation, $message = NULL, $arg = NULL)
-	{
-		//throw new \NotImplementedException('');
-		switch($operation) {
-			case Form::EQUAL:
-				if (!is_array($arg))
-					throw new \InvalidArgumentException(__METHOD__ . '(' . $operation . ') must be compared to array.');
-		}
-
-		parent::addRule($operation, $message, $arg);
-	}
-
-
-
 	/**
 	 * @param array $value
 	 * @return TagInput provides fluent interface
@@ -93,6 +80,33 @@ class TagInput extends TextInput
 
 
 
+	/**
+	 * Adds a validation rule.
+	 * @param  mixed      rule type
+	 * @param  string     message to display for invalid data
+	 * @param  mixed      optional rule arguments
+	 * @return FormControl  provides a fluent interface
+	 */
+	public function addRule($operation, $message = NULL, $arg = NULL)
+	{
+		switch($operation) {
+			case Form::EQUAL:
+				if (!is_array($arg))
+					throw new \InvalidArgumentException(__METHOD__ . '(' . $operation . ') must be compared to array.');
+		}
+
+		parent::addRule($operation, $message, $arg);
+	}
+
+
+
+	/********************* registration *******************/
+
+
+
+	/**
+	 * Adds addTag() method to \Nette\Forms\Form
+	 */
 	public static function register()
 	{
 		Form::extensionMethod('addTag', callback(__CLASS__, 'addTagInput'));
@@ -113,9 +127,9 @@ class TagInput extends TextInput
 
 
 
-	/**
-	 * VALIDATORS
-	 */
+	/********************* validation *********************/
+
+
 
 	/**
 	 * Equal validator: are control's value and second parameter equal?
