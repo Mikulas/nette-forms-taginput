@@ -36,7 +36,7 @@ $(function() {
 		delimiter = $main.attr('data-tag-delimiter') == undefined ? default_delimiter : new RegExp($main.attr('data-tag-delimiter'));
 		$.each($(this).val().split(delimiter), function(index, value) {
 			if (!($control.parent().attr('data-tag-unique') && !$.inArray(value, $control.parent().getValues())) && $.trim(value) != '') {
-				if ($control.parent().getValues().length < parseInt($control.parent().attr('data-tag-length'))) {
+				if (!($control.parent().attr('data-tag-length') == 'false' && $control.parent().getValues().length >= parseInt($control.parent().attr('data-tag-length')))) {
 					$control.append('<span>' + value + '<div class="delete">&times;</div></span><wbr>');
 				}
 			}
