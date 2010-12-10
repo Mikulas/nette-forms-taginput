@@ -95,7 +95,7 @@ class TagInput extends TextInput
 					throw new \InvalidArgumentException(__METHOD__ . '(' . $operation . ') must be compared to array.');
 		}
 
-		parent::addRule($operation, $message, $arg);
+		return parent::addRule($operation, $message, $arg);
 	}
 
 
