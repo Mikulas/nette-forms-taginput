@@ -8,8 +8,6 @@ $(function() {
 		$control = $('.tag-control-container[for=' + $(this).attr('id') + ']'); // todo fixme
 		$(this).appendTo($control);
 		$control.prepend('<span class="tag-value"></span>');
-
-		$control.prepend('<input type=button onclick="$(this).parent().validate()" value=validate>');
 		$control.append('<input type="text" class="tag-control-helper">');
 
 		rules = eval('[' + ($(this).attr('data-nette-rules') || '') + ']');
