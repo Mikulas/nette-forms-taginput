@@ -11,7 +11,7 @@ $(function() {
 		$control.append('<input type="text" class="tag-control-helper">');
 		
 		if ($(this).attr('data-tag-suggest')) {
-			$control.append('<div class="tag-suggest"></div>');
+			$control.append('<div class="tag-suggest"><ul><li>test</li></ul></div>');
 		}
 		
 		rules = eval('[' + ($(this).attr('data-nette-rules') || '') + ']');
@@ -52,6 +52,7 @@ $(function() {
 
 		$(this).fillToParent();
 		$(this).parent().moveSuggest();
+		$(this).siblings('.tag-suggest').hide();
 
 		$(this).val('');
 		$main.updateValue();
@@ -177,6 +178,12 @@ $(function() {
 		}
 	});
 
+	$('.tag-control-helper').keyup(function() {
+		if ($(this).getCaret() >= 2) {
+			$(this).siblings('.tag-suggest').show();
+		}
+	});
+
 	$('.tag-control-container .tag-value span .delete').live('click', function() {
 		$control = $(this).parents('.tag-control-container').children('.tag-control');
 		$(this).parent().remove();
@@ -187,6 +194,10 @@ $(function() {
 	$('.tag-control-helper').live('focus', function() {
 		$(this).parent().addClass('focus');
 	})
+
+	$('.tag-control-container .tag-suggest li').live('click', function() {
+		$(this).parent().parent().siblings('.tag-control-helper').val($(this).text()).change();
+	});
 
 
 	// set defaults
@@ -236,10 +247,9 @@ $.fn.moveSuggest = function() {
 		console.log('move suggest not applicable');
 		return false;
 	}
-	console.log('move suggest');
 	$(this).children('.tag-suggest').css({
 		'left': $(this).children('.tag-control-helper').position()['left'],
-		'width': $(this).children('.tag-control-helper').css('width')
+		'width': ($(this).position()['left'] + $(this).width() - $(this).children('.tag-control-helper').position()['left'])
 	});
 	return $(this);
 };
