@@ -161,7 +161,9 @@ $(function() {
 	});
 
 	$('.tag-control-container .tag-value span .delete').live('click', function() {
+		$control = $(this).parents('.tag-control-container').children('.tag-control');
 		$(this).parent().remove();
+		$control.updateValue();
 	});
 
 

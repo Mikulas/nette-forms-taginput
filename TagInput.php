@@ -42,7 +42,11 @@ class TagInput extends TextInput
 	 */
 	public function getValue()
 	{
-		return String::split(parent::getValue(), "\x01" . $this->delimiter . "\x01");
+		$value = String::split(parent::getValue(), "\x01" . $this->delimiter . "\x01");
+		if ($value[0] == '' && count($value) === 1) {
+			$value = array();
+		}
+		return $value;
 	}
 
 
@@ -140,14 +144,9 @@ class TagInput extends TextInput
 	public static function validateEqual(IFormControl $control, $arg)
 	{
 		$value = $control->getValue();
-		foreach ((is_array($value) ? $value : array($value)) as $val) {
-			foreach ((is_array($arg) ? $arg : array($arg)) as $item) {
-				if ((string) $val === (string) ($item instanceof IFormControl ? $item->value : $item)) {
-					return TRUE;
-				}
-			}
-		}
-		return FALSE;
+		sort($value);
+		sort($arg);
+		return $value === $arg;
 	}
 
 
