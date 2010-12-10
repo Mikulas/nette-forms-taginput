@@ -11,7 +11,7 @@ $(function() {
 		$control.append('<input type="text" class="tag-control-helper">');
 		
 		if ($(this).attr('data-tag-suggest')) {
-			$control.append('<div class="tag-suggest"><ul><li>test</li></ul></div>');
+			$control.append('<div class="tag-suggest"><ul></ul></div>');
 		}
 		
 		rules = eval('[' + ($(this).attr('data-nette-rules') || '') + ']');
@@ -51,8 +51,7 @@ $(function() {
 		});
 
 		$(this).fillToParent();
-		$(this).parent().moveSuggest();
-		$(this).siblings('.tag-suggest').hide();
+		//$(this).siblings('.tag-suggest').hide();
 
 		$(this).val('');
 		$main.updateValue();
@@ -71,6 +70,10 @@ $(function() {
 			$(event.target).addClass('focus');
 		} else {
 			$(event.target).parents('.tag-control-container').addClass('focus');
+		}
+
+		if (!$(event.target).is('.tag-suggest')) {
+			$('.tag-suggest').hide();
 		}
 	});
 
@@ -122,7 +125,6 @@ $(function() {
 			$node.siblings('input.tag-control').updateValue();
         
 			$node.siblings('input.tag-control-helper').fillToParent();
-			$node.parent().moveSuggest();
 			return false;
         
 		// pressed arrow key
@@ -159,9 +161,11 @@ $(function() {
 			$('.tag-control-container .tag-value span').removeClass('focus');
 			$('.tag-control-container.focus').children('input.tag-control-helper').focus();
 			$('.tag-control-container.focus').removeClass('focus');
+			$('.tag-suggest').hide();
 
 		// pressed enter
 		} else if (e.keyCode == 13) {
+			$('.tag-suggest').hide();
 			if ($.trim($('.tag-control-helper:focus').val()) != '') {
 				$('.tag-control-helper:focus').change();
 				return false;
@@ -180,7 +184,29 @@ $(function() {
 
 	$('.tag-control-helper').keyup(function() {
 		if ($(this).getCaret() >= 2) {
-			$(this).siblings('.tag-suggest').show();
+			$control = $(this);
+			uri = $(this).siblings('.tag-control').attr('data-tag-suggest').replace('%25__filter%25', $control.val());
+			json = $.getJSON(uri, null, function(json) {
+				$control.siblings('.tag-suggest').hide();
+				$container = $control.siblings('.tag-suggest').children('ul');
+				$container.children('li').remove();
+				$.each(json, function(id, value) {
+					$container.append('<li>' + value + '</li>');
+				});
+				if (json.length !== 0) {
+					$control.siblings('.tag-suggest').show();
+				}
+				
+				$control.siblings('.tag-suggest').children('ul').children('li').click(function() {
+					// todo this still does not work if the removed element is shorter and the longer one moves and thus the click even fails
+					// todo also does not work if the tag being inserted from autocomplete == :first tag
+					$value = $control.parent().children('.tag-value span:last');
+					$value.next().remove();
+					$value.remove();
+					$control.siblings('.tag-control-helper').val($(this).text()).change();
+					$control.siblings('.tag-suggest').hide();
+				});
+			});
 		}
 	});
 
@@ -190,25 +216,15 @@ $(function() {
 		$control.updateValue();
 	});
 
-
 	$('.tag-control-helper').live('focus', function() {
 		$(this).parent().addClass('focus');
 	})
-
-	$('.tag-control-container .tag-suggest li').live('click', function() {
-		$(this).parent().parent().siblings('.tag-control-helper').val($(this).text()).change();
-	});
 
 
 	// set defaults
 	$('input.tag-control-helper').each(function() {
 		$(this).val($(this).siblings('input.tag-control').val()).trigger('change');
 	});
-
-	$('input.tag-control').each(function() {
-		Nette.toggleControl($(this).get(0));
-	});
-
 });
 
 $.fn.updateValue = function() {
@@ -241,19 +257,6 @@ $.fn.fillToParent = function() {
 	$(this).css('width', width);
 	return $(this);
 };
-
-$.fn.moveSuggest = function() {
-	if (!$(this).children('.tag-control').attr('data-tag-suggest')) {
-		console.log('move suggest not applicable');
-		return false;
-	}
-	$(this).children('.tag-suggest').css({
-		'left': $(this).children('.tag-control-helper').position()['left'],
-		'width': ($(this).position()['left'] + $(this).width() - $(this).children('.tag-control-helper').position()['left'])
-	});
-	return $(this);
-};
-
 
 $.fn.getCaret = function(pos) {
 	if ($(this).get(0).createTextRange) {

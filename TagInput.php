@@ -20,6 +20,14 @@ class TagInput extends TextInput
 
 
 
+	/** @var string */
+	private static $renderName;
+
+	
+
+	/** @var int */
+	private $payloadLimit = 5;
+
 	/** @var string regex */
 	private $delimiter = '[\s,]+';
 
@@ -68,9 +76,8 @@ class TagInput extends TextInput
 		}
 		
 		if (count($this->suggest) !== 0) {
-			$control->attrs['data-tag-suggest'] = 'true';
+			$control->attrs['data-tag-suggest'] = \Nette\Environment::getApplication()->getPresenter()->link(self::$renderName, array('filter' => '%__filter%'));
 		}
-		
 		return $control;
 	}
 
@@ -117,8 +124,32 @@ class TagInput extends TextInput
 	 */
 	public function setSuggest(array $suggest)
 	{
-		$this->suggest = $suggest;
+		$this->suggest = array();
+		foreach ($suggest as $tag) {
+			if (!is_scalar($tag) && !method_exists($tag, '__toString')) {
+				throw new \InvalidArgumentException(__CLASS__ . ' can only use autocomplete with scalar values or objects with defined conversion to string.');
+			}
+			if (!array_search($tag, $this->suggest)) {
+				$this->suggest[] = $tag;
+			}
+		}
 		return $this;
+	}
+
+
+
+	public function renderResponse($presenter, $filter)
+	{
+		$data = array();
+		foreach ($this->suggest as $tag) {
+			if (String::startsWith($tag, $filter)) {
+				$data[] = $tag;
+			}
+			if (count($data) >= $this->payloadLimit) {
+				break;
+			}
+		}
+		$presenter->sendResponse(new \Nette\Application\JsonResponse($data));
 	}
 
 
@@ -146,6 +177,8 @@ class TagInput extends TextInput
 	 */
 	public static function addTagInput(Form $form, $name, $label = NULL, $suggest = NULL)
 	{
+		self::$renderName = 'tagInputSuggest' . ucfirst($name);
+
 		$form[$name] = new self($label);
 		$form[$name]->setSuggest($suggest === NULL ? array() : $suggest);
 		return $form[$name];
