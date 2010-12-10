@@ -12,12 +12,17 @@ $(function() {
 
 		rules = eval('[' + ($(this).attr('data-nette-rules') || '') + ']');
 		var isUnique = false;
+		var length = false;
 		$.each(rules, function(index, rule) {
 			if (rule.op === ':unique') {
 				isUnique = true;
 			}
+			if ((rule.op === ':maxLength' || rule.op === ':length') && rule.arg > length) {
+				length = rule.arg;
+			}
 		});
 		$control.attr('data-tag-unique', isUnique);
+		$control.attr('data-tag-length', length);
 
 		if ($(this).attr('disabled')) {
 			$control.children('.tag-control-helper').hide();
@@ -31,7 +36,9 @@ $(function() {
 		delimiter = $main.attr('data-tag-delimiter') == undefined ? default_delimiter : new RegExp($main.attr('data-tag-delimiter'));
 		$.each($(this).val().split(delimiter), function(index, value) {
 			if (!($control.parent().attr('data-tag-unique') && !$.inArray(value, $control.parent().getValues())) && $.trim(value) != '') {
-				$control.append('<span>' + value + '<div class="delete">&times;</div></span><wbr>');
+				if ($control.parent().getValues().length < parseInt($control.parent().attr('data-tag-length'))) {
+					$control.append('<span>' + value + '<div class="delete">&times;</div></span><wbr>');
+				}
 			}
 		});
 
@@ -185,6 +192,13 @@ $(function() {
 
 $.fn.updateValue = function() {
 	$(this).val($(this).parent().getValues().join(', '));
+
+	if (parseInt($(this).parent().attr('data-tag-length')) <= $(this).parent().getValues().length) {
+		$(this).siblings('.tag-control-helper').hide();
+	} else {
+		$(this).siblings('.tag-control-helper').show();
+	}
+
 	return $(this);
 };
 
