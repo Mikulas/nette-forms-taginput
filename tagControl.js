@@ -9,7 +9,11 @@ $(function() {
 		$(this).appendTo($control);
 		$control.prepend('<span class="tag-value"></span>');
 		$control.append('<input type="text" class="tag-control-helper">');
-
+		
+		if ($(this).attr('data-tag-suggest')) {
+			$control.append('<div class="tag-suggest"></div>');
+		}
+		
 		rules = eval('[' + ($(this).attr('data-nette-rules') || '') + ']');
 		var isUnique = false;
 		var length = false;
@@ -47,6 +51,7 @@ $(function() {
 		});
 
 		$(this).fillToParent();
+		$(this).parent().moveSuggest();
 
 		$(this).val('');
 		$main.updateValue();
@@ -116,6 +121,7 @@ $(function() {
 			$node.siblings('input.tag-control').updateValue();
         
 			$node.siblings('input.tag-control-helper').fillToParent();
+			$node.parent().moveSuggest();
 			return false;
         
 		// pressed arrow key
@@ -220,8 +226,21 @@ $.fn.getValues = function() {
 $.fn.fillToParent = function() {
 	$(this).css('width', 0);
 	width = $(this).parent().width() - $(this).position()['left'];
-	width = width < 50 ? 50 : width;
+	width = width < 50 ? $(this).parent().width() : width;
 	$(this).css('width', width);
+	return $(this);
+};
+
+$.fn.moveSuggest = function() {
+	if (!$(this).children('.tag-control').attr('data-tag-suggest')) {
+		console.log('move suggest not applicable');
+		return false;
+	}
+	console.log('move suggest');
+	$(this).children('.tag-suggest').css({
+		'left': $(this).children('.tag-control-helper').position()['left'],
+		'width': $(this).children('.tag-control-helper').css('width')
+	});
 	return $(this);
 };
 

@@ -8,3 +8,4 @@
 .tag-control-container .tag-value span .delete {display: none; margin-left: 4px; margin-right: -13px;}
 .tag-control-container .tag-value span:hover .delete {display: inline;}
 .tag-control-container .tag-value span:hover .delete:hover {cursor: pointer;}
+.tag-control-container .tag-suggest {background-color: red; width: 300px; height: 80px; position: absolute;}

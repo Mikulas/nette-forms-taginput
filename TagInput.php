@@ -23,6 +23,9 @@ class TagInput extends TextInput
 	/** @var string regex */
 	private $delimiter = '[\s,]+';
 
+	/** @var array autocomplete */
+	private $suggest;
+
 
 
 	/**
@@ -62,6 +65,10 @@ class TagInput extends TextInput
 
 		if ($this->delimiter !== NULL && String::trim($this->delimiter) !== '') {
 			$control->attrs['data-tag-delimiter'] = $this->delimiter;
+		}
+		
+		if (count($this->suggest) !== 0) {
+			$control->attrs['data-tag-suggest'] = 'true';
 		}
 		
 		return $control;
@@ -104,6 +111,18 @@ class TagInput extends TextInput
 
 
 
+	/**
+	 * @param array $suggest
+	 * @return TagInput provides fluent interface
+	 */
+	public function setSuggest(array $suggest)
+	{
+		$this->suggest = $suggest;
+		return $this;
+	}
+
+
+
 	/********************* registration *******************/
 
 
@@ -122,11 +141,14 @@ class TagInput extends TextInput
 	 * @param Form $form
 	 * @param string $name
 	 * @param string $label
+	 * @param array $suggest
 	 * @return TagInput provides fluent interface
 	 */
-	public static function addTagInput(Form $form, $name, $label = NULL)
+	public static function addTagInput(Form $form, $name, $label = NULL, $suggest = NULL)
 	{
-		return $form[$name] = new self($label);
+		$form[$name] = new self($label);
+		$form[$name]->setSuggest($suggest === NULL ? array() : $suggest);
+		return $form[$name];
 	}
 
 
