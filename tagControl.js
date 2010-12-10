@@ -24,6 +24,10 @@ $(function() {
 		$control.attr('data-tag-unique', isUnique);
 		$control.attr('data-tag-length', length);
 
+		$control.get(0).focus = function() {
+			$control.children('.tag-control-helper').focus();
+		}
+
 		if ($(this).attr('disabled')) {
 			$control.children('.tag-control-helper').hide();
 		}
@@ -260,7 +264,7 @@ $.fn.validate = function(onlyCheck) {
 
 
 jQuery.fn.compare = function(t) {
-    if (this.length != t.length) { return false; }
+    if (this.length != t.length) {return false;}
     var a = this.sort(),
         b = t.sort();
     for (var i = 0; t[i]; i++) {
