@@ -1,5 +1,6 @@
 $(function() {
 	var default_delimiter = /[\s,]+/;
+
 	$('input.tag-control').hide();
 
 	$('input.tag-control').each(function(index) {
@@ -7,7 +8,19 @@ $(function() {
 		$control = $('.tag-control-container[for=' + $(this).attr('id') + ']'); // todo fixme
 		$(this).appendTo($control);
 		$control.prepend('<span class="tag-value"></span>');
+
+		$control.prepend('<input type=button onclick="$(this).parent().validate()" value=validate>');
 		$control.append('<input type="text" class="tag-control-helper">');
+
+		rules = eval('[' + ($(this).attr('data-nette-rules') || '') + ']');
+		var isUnique = false;
+		$.each(rules, function(index, rule) {
+			if (rule.op === ':unique') {
+				isUnique = true;
+			}
+		});
+		$control.attr('data-tag-unique', isUnique);
+
 		if ($(this).attr('disabled')) {
 			$control.children('.tag-control-helper').hide();
 		}
@@ -19,7 +32,7 @@ $(function() {
 		$main = $(this).siblings('input.tag-control');
 		delimiter = $main.attr('data-tag-delimiter') == undefined ? default_delimiter : new RegExp($main.attr('data-tag-delimiter'));
 		$.each($(this).val().split(delimiter), function(index, value) {
-			if ($.trim(value) != '') {
+			if (!($control.parent().attr('data-tag-unique') && !$.inArray(value, $control.parent().getValues())) && $.trim(value) != '') {
 				$control.append('<span>' + value + '<div class="delete">&times;</div></span><wbr>');
 			}
 		});
@@ -124,9 +137,6 @@ $(function() {
 					return true;
 				}
 			}
-		// add trigger on change /------- -/-/  /------- -/-/  /------- -/-/  /------- -/-/  /------- -/-/  /------- -/-/  /------- -/-/  /------- -/-/  /------- -/-/  /------- -/-/  /------- -/-/
-
-		//return false;
 
 		// pressed tab
 		} else if (e.keyCode == 9) {
@@ -167,19 +177,26 @@ $(function() {
 		$(this).val($(this).siblings('input.tag-control').val()).trigger('change');
 	});
 
+	$('input.tag-control').each(function() {
+		Nette.toggleControl($(this).get(0));
+	});
+
 });
 
 $.fn.updateValue = function() {
-	var value = [];
-	$(this).siblings('.tag-value').children('span').each(function() {
-		value.push($(this).getTagValue());
-	});
-	$(this).val(value.join(', '));
+	$(this).val($(this).parent().getValues().join(', '));
 	return $(this);
 };
 
-$.fn.getTagValue = function() {
-	return $(this).text().substr(0, $(this).text().length - 1); // fixme
+$.fn.getValues = function() {
+	var values = new Array();
+	var index = 0;
+	$(this).children('.tag-value').children('span').each(function() {
+		$span = $(this).clone();
+		$span.children().remove();
+		values[index++] = $span.text();
+	});
+	return values;
 };
 
 $.fn.fillToParent = function() {
@@ -201,3 +218,103 @@ $.fn.getCaret = function(pos) {
 		return $(this).get(0).selectionStart;
 	}
 }
+
+
+/********************* validation *********************/
+
+
+$.fn.validate = function(onlyCheck) {
+	$control = $(this);
+	var tags = $(this).getValues();
+	var rules = eval('[' + ($control.children('.tag-control').attr('data-nette-rules') || '') + ']');
+
+	$.each(rules, function (id, rule) {
+		var op = rule.op.match(/(~)?([^?]+)/);
+		rule.neg = op[1];
+		rule.op = op[2];
+		rule.condition = !!rule.rules;
+
+		
+	});
+
+	return true;
+};
+
+
+Nette.validateRuleTagControl = function(tags, op, arg)
+{
+	switch (op) {
+	case ':filled':
+		return tags.size() !== 0;
+
+	case ':valid':
+		return true;
+		//return Nette.validateControl(elem, null, true); // todo fixme
+
+	case ':equal':
+		arg = arg instanceof Array ? arg : [arg];
+		if (arg.count() !== tags.count()) {
+			return false;
+		}
+		// todo fixme
+		return true;
+
+	case ':minLength':
+		return tags.size() >= arg;
+
+	case ':maxLength':
+		return tags.size() <= arg;
+
+	case ':length':
+		if (typeof arg !== 'object') {
+			arg = [arg, arg];
+		}
+		return (arg[0] === null || tags.count() >= arg[0]) && (arg[1] === null || tags.count() <= arg[1]);
+
+	case ':integer':
+		$.each(tags, function(index, tag) {
+			if (!tag.match(/^-?[0-9]+$/))
+				return false;
+		});
+		return true;
+
+	case ':float':
+		$.each(tags, function(index, tag) {
+			if (!tag.match(/^-?[0-9]*[.,]?[0-9]+$/))
+				return false;
+		});
+		return true;
+
+	case ':unique':
+		return $.unique(tags) === tags;
+	}
+
+	if (onlyCheck === undefined || !onlyCheck) {
+		Nette.addError($control.children('.tag-control').get(0), rule.msg.replace('%value', $control.getValues().join(', ')));
+	}
+	return false;
+}
+
+
+Nette.validateForm = function(sender) {
+	var form = sender.form || sender;
+	if (form['nette-submittedBy'] && form.elements[form['nette-submittedBy']] && form.elements[form['nette-submittedBy']].getAttribute('formnovalidate') !== null) {
+		return true;
+	}
+	for (var i = 0; i < form.elements.length; i++) {
+		var elem = form.elements[i];
+		if (!(elem.nodeName.toLowerCase() in {input:1, select:1, textarea:1}) || (elem.type in {hidden:1, submit:1, image:1, reset: 1}) || elem.disabled || elem.readonly) {
+			continue;
+		}
+		if ($(elem).is('.tag-control')) {
+			if (!$(elem).parent().validate()) {
+				return false;
+			}
+			continue;
+		}
+		if (!Nette.validateControl(elem)) {
+			return false;
+		}
+	}
+	return true;
+};
