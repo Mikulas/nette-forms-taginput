@@ -242,16 +242,33 @@ $.fn.validate = function(onlyCheck) {
 	var tags = $(this).getValues();
 	var rules = eval('[' + ($control.children('.tag-control').attr('data-nette-rules') || '') + ']');
 
+	success = true;
 	$.each(rules, function (id, rule) {
 		var op = rule.op.match(/(~)?([^?]+)/);
 		rule.neg = op[1];
 		rule.op = op[2];
-		rule.condition = !!rule.rules;
-
-		
+		if (!Nette.validateRuleTagControl(tags, rule.op, rule.arg)) {
+			if (typeof onlyCheck == 'undefined' || !onlyCheck) {
+				Nette.addError($control.get(0), rule.msg.replace('%value', $control.getValues().join(', ')));
+			}
+			success = false;
+		}
 	});
 
-	return true;
+	return success;
+};
+
+
+jQuery.fn.compare = function(t) {
+    if (this.length != t.length) { return false; }
+    var a = this.sort(),
+        b = t.sort();
+    for (var i = 0; t[i]; i++) {
+        if (a[i] !== b[i]) {
+                return false;
+        }
+    }
+    return true;
 };
 
 
@@ -259,7 +276,7 @@ Nette.validateRuleTagControl = function(tags, op, arg)
 {
 	switch (op) {
 	case ':filled':
-		return tags.size() !== 0;
+		return tags.length !== 0;
 
 	case ':valid':
 		return true;
@@ -267,37 +284,35 @@ Nette.validateRuleTagControl = function(tags, op, arg)
 
 	case ':equal':
 		arg = arg instanceof Array ? arg : [arg];
-		if (arg.count() !== tags.count()) {
-			return false;
-		}
-		// todo fixme
-		return true;
+		return $(tags).compare(arg);
 
 	case ':minLength':
-		return tags.size() >= arg;
+		return tags.length >= arg;
 
 	case ':maxLength':
-		return tags.size() <= arg;
+		return tags.length <= arg;
 
 	case ':length':
 		if (typeof arg !== 'object') {
 			arg = [arg, arg];
 		}
-		return (arg[0] === null || tags.count() >= arg[0]) && (arg[1] === null || tags.count() <= arg[1]);
+		return (arg[0] === null || tags.length >= arg[0]) && (arg[1] === null || tags.length <= arg[1]);
 
 	case ':integer':
+		success = true;
 		$.each(tags, function(index, tag) {
 			if (!tag.match(/^-?[0-9]+$/))
-				return false;
+				success = false;
 		});
-		return true;
+		return success;
 
 	case ':float':
+		success = true;
 		$.each(tags, function(index, tag) {
 			if (!tag.match(/^-?[0-9]*[.,]?[0-9]+$/))
-				return false;
+				success = false
 		});
-		return true;
+		return success;
 
 	case ':unique':
 		return $.unique(tags) === tags;
