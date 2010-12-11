@@ -135,6 +135,38 @@ $(function() {
 		// pressed arrow key
 		} else if (e.keyCode >= 37 && e.keyCode <= 40) {
 			left = e.keyCode == 37 || e.keyCode == 38;
+
+			// if suggest is visible
+			if ($('.tag-control-container.focus').siblings('.tag-suggest').css('display') != 'none') {
+				// pressed down
+				if (e.keyCode == 40) {
+					if ($('.tag-suggest ul li.selected').length == 0) {
+						$tag = $('.tag-control-container.focus').siblings('.tag-suggest').children('ul li:first');
+						$tag.addClass('selected');
+					} else {
+						$c = $('.tag-suggest ul li.selected');
+						if ($c.next().length != 0) {
+							$c.removeClass('selected');
+							$c.next().addClass('selected');
+						}
+					}
+					return false;
+
+				// pressed up
+				} else if (e.keyCode == 38) {
+					if (!$('.tag-suggest ul li.selected').length == 0) {
+						$c = $('.tag-suggest ul li.selected');
+						$c.removeClass('selected');
+						if ($c.prev().length != 0) {
+							$c.prev().addClass('selected');
+						} else {
+							$c.parent().parent().siblings('.tag-control-helper').focus();
+						}
+					}
+					return false;
+				}
+			}
+
 			$span = $('.tag-control-container .tag-value span.focus');
 			if ($span.size() != 0) { // if any tag is focused
 				if (left) {
@@ -170,6 +202,13 @@ $(function() {
 
 		// pressed enter
 		} else if (e.keyCode == 13) {
+			$suggest = $('.tag-control-container.focus .tag-suggest ul li.selected');
+			if ($suggest.length != 0) {
+				$suggest.parent().parent().siblings('.tag-control-helper').val($suggest.text()).change();
+				$('.tag-suggest ul li.selected').removeClass('selected');
+				return false;
+			}
+
 			$('.tag-suggest').hide();
 			if ($.trim($('.tag-control-helper:focus').val()) != '') {
 				$('.tag-control-helper:focus').change();
@@ -187,7 +226,12 @@ $(function() {
 		}
 	});
 
+	var lastValue = '';
 	$('.tag-control-helper').keyup(function() {
+		if ($(this).val() == lastValue) {
+			return true;
+		}
+		lastValue = $(this).val();
 		if ($(this).getCaret() >= 2) {
 			$control = $(this);
 			uri = $(this).siblings('.tag-control').attr('data-tag-suggest').replace('%25__filter%25', $control.val());
@@ -210,6 +254,8 @@ $(function() {
 					$control.parent().children('.tag-control-helper').val($(this).text()).change();
 				});
 			});
+		} else {
+			$(this).siblings('.tag-suggest').hide();
 		}
 	});
 
