@@ -52,7 +52,7 @@ $(function() {
 		$.each($(this).val().split(delimiter), function(index, value) {
 			if (!($control.parent().attr('data-tag-unique') != 'false' && $.inArray(value, $control.parent().getValues()) != -1) && $.trim(value) != '') {
 				if (!($control.parent().attr('data-tag-length') == 'false' && $control.parent().getValues().length >= parseInt($control.parent().attr('data-tag-length')))) {
-					$control.append('<span>' + value + '<div class="delete">&times;</div></span><wbr>');
+					$control.append('<span>' + value + '<div class="delete">&times;</div></span>&zwnj;<wbr>');
 				}
 			}
 		});
