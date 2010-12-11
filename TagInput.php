@@ -7,11 +7,6 @@ use Nette\Forms\TextInput;
 use Nette\String;
 
 
-/**
- * @todo add unique supprot in php
- * @todo add php support for validators
- * @todo add js support for validators
- */
 class TagInput extends TextInput
 {
 
@@ -142,7 +137,7 @@ class TagInput extends TextInput
 	{
 		$data = array();
 		foreach ($this->suggest as $tag) {
-			if (String::startsWith($tag, $filter)) {
+			if (String::startsWith(String::lower($tag), String::lower($filter))) {
 				$data[] = $tag;
 			}
 			if (count($data) >= $this->payloadLimit) {
@@ -163,7 +158,7 @@ class TagInput extends TextInput
 	 */
 	public static function register()
 	{
-		Form::extensionMethod('addTag', callback(__CLASS__, 'addTagInput'));
+		Form::extensionMethod('addTag', callback(__CLASS__, 'addTag'));
 	}
 
 
@@ -175,7 +170,7 @@ class TagInput extends TextInput
 	 * @param array $suggest
 	 * @return TagInput provides fluent interface
 	 */
-	public static function addTagInput(Form $form, $name, $label = NULL, $suggest = NULL)
+	public static function addTag(Form $form, $name, $label = NULL, $suggest = NULL)
 	{
 		self::$renderName = 'tagInputSuggest' . ucfirst($name);
 
@@ -268,7 +263,7 @@ class TagInput extends TextInput
 	 */
 	public static function validateEmail(TextBase $control)
 	{
-		throw new \LogicException(':EMAIL validator is not applicable to TagControl.');
+		throw new \LogicException(':EMAIL validator is not applicable to TagInput.');
 	}
 
 
@@ -280,7 +275,7 @@ class TagInput extends TextInput
 	 */
 	public static function validateUrl(TextBase $control)
 	{
-		throw new \LogicException(':URL validator is not applicable to TagControl.');
+		throw new \LogicException(':URL validator is not applicable to TagInput.');
 	}
 
 
@@ -288,7 +283,7 @@ class TagInput extends TextInput
 	/** @deprecated */
 	public static function validateRegexp(TextBase $control, $regexp)
 	{
-		throw new \LogicException(':REGEXP validator is not applicable to TagControl.');
+		throw new \LogicException(':REGEXP validator is not applicable to TagInput.');
 	}
 
 
@@ -301,7 +296,7 @@ class TagInput extends TextInput
 	 */
 	public static function validatePattern(TextBase $control, $pattern)
 	{
-		throw new \LogicException(':PATTERN validator is not applicable to TagControl.');
+		throw new \LogicException(':PATTERN validator is not applicable to TagInput.');
 	}
 
 
@@ -348,7 +343,7 @@ class TagInput extends TextInput
 	 */
 	public static function validateRange(TextBase $control, $range)
 	{
-		throw new \LogicException(':RANGE validator is not applicable to TagControl.');
+		throw new \LogicException(':RANGE validator is not applicable to TagInput.');
 	}
 
 
