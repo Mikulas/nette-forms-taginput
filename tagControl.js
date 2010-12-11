@@ -192,15 +192,17 @@ $(function() {
 		if ($(this).getCaret() >= 2) {
 			$control = $(this);
 			uri = $(this).siblings('.tag-control').attr('data-tag-suggest').replace('%25__filter%25', $control.val());
-			// todo do not send already filled in tags if unique rule is forced
 			json = $.getJSON(uri, null, function(json) {
 				$control.siblings('.tag-suggest').hide();
 				$container = $control.siblings('.tag-suggest').children('ul');
 				$container.children('li').remove();
+				// do not add to list if unique rule is forced and the value is already filled
 				$.each(json, function(id, value) {
-					$container.append('<li>' + value + '</li>');
+					if ($control.parent().attr('data-tag-unique') == 'false' || $.inArray(value, $container.parent().parent().getValues()) == -1) {
+						$container.append('<li>' + value + '</li>');
+					}
 				});
-				if (json.length !== 0) {
+				if ($container.children('li').length !== 0) {
 					$control.siblings('.tag-suggest').show();
 				}
 				
