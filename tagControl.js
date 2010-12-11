@@ -4,8 +4,8 @@ $(function() {
 	$('input.tag-control').hide();
 
 	$('input.tag-control').each(function(index) {
-		$(this).parent().append('<span class="tag-control-container" for="' + $(this).attr('id')  + '"></span>');
-		$control = $('.tag-control-container[for=' + $(this).attr('id') + ']'); // todo fixme
+		$control = $('<span class="tag-control-container" for="' + $(this).attr('id')  + '"></span>');
+		$(this).parent().append($control);
 		$(this).appendTo($control);
 		$control.prepend('<span class="tag-value"></span>');
 		$control.append('<input type="text" class="tag-control-helper">');
@@ -105,8 +105,7 @@ $(function() {
 			$control = $('.tag-control-container .tag-value span.focus');
 			$node = $control.parent();
 
-			// todo caret condition here
-			if ($control.size() != 0) {
+			if ($('.tag-control-helper:focus').length != 0 && $('.tag-control-helper:focus').getCaret() != 0) {
 				// if element on right exists
 				if ($control.next().next().size() != 0) {
 					$control.next().next().addClass('focus');
@@ -317,10 +316,6 @@ Nette.validateRuleTagControl = function(tags, op, arg)
 	switch (op) {
 	case ':filled':
 		return tags.length !== 0;
-
-	case ':valid':
-		return true;
-		//return Nette.validateControl(elem, null, true); // todo fixme
 
 	case ':equal':
 		arg = arg instanceof Array ? arg : [arg];
