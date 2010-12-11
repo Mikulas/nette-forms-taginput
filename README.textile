@@ -1,12 +1,14 @@
-h1. TagControl
+h1. TagInput
 
 * _Author_: Mikuláš Dítě
 * _Copyright_: (c) Mikuláš Dítě 2010
 
 h2. Example
 
-Online demo at "http://mikulasdite.github.com/TagControl":http://mikulasdite.github.com/TagControl
-!http://files.droplr.com/files/71192952/JlBW.Screen%20shot%202010-12-09%20at%2020%3A02%3A49.png!
+Online demo at "http://taginput.injectionsoft.com/":http://taginput.injectionsoft.com/
+!http://files.droplr.com/files/71192952/qVGi.Screen%20shot%202010-12-11%20at%2012%3A06%3A19.png!
+
+!http://files.droplr.com/files/71192952/DbQR.Screen%20shot%202010-12-11%20at%2012%3A05%3A25.png!
 
 h2. Requirements
 
@@ -15,10 +17,10 @@ h2. Requirements
 
 h2. Usage
 
-Put `tagControl.css` and `tagControl.js` to public directory and link them to the layout. For example, you might use:
+Put `tagInput.css` and `tagInput.js` to public directory and link them to the layout. For example, you might use:
 
-bc.    <link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/css/tagControl.css" type="text/css">
-        <script type="text/javascript" src="{$basePath}/js/tagControl.js"></script>
+bc.    <link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/css/tagInput.css" type="text/css">
+        <script type="text/javascript" src="{$basePath}/js/tagInput.js"></script>
 
 then, insert `TagInput.php` anywhere your RobotLoader looks for classes. In your `BasePresenter.php::startup()` register this component with:
 
