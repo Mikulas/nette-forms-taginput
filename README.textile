@@ -32,10 +32,13 @@ bc.    $form->addTag('tags')
 	    ->setDefaultValue($page->tags);
 	    
 h2. Autocomplete
+
 Simply specify the array of tags as a third argument of addTag() call:
+
 bc.    $form->addTag('tag', NULL, array('tags', 'to', 'suggest'));
 
 You have create an action on the presenter (or mutual ancestor of presenters) where you want to used this control.
+
 bc.    public function actionTagInputSuggestControlname($filter)
 	{
 		$form = $this->getComponent('componentname');
