@@ -41,7 +41,6 @@ $(function() {
 		// prevents blur if clicked on autocomplete
 		if ($('.tag-suggest:hover').length != 0) {
 			if ($('.tag-suggest:hover').css('display') != 'none') {
-				console.log('blur not used');
 				return false;
 			}
 		}
@@ -51,7 +50,7 @@ $(function() {
 		$main = $(this).siblings('input.tag-control');
 		delimiter = $main.attr('data-tag-delimiter') == undefined ? default_delimiter : new RegExp($main.attr('data-tag-delimiter'));
 		$.each($(this).val().split(delimiter), function(index, value) {
-			if (!($control.parent().attr('data-tag-unique') && !$.inArray(value, $control.parent().getValues())) && $.trim(value) != '') {
+			if (!($control.parent().attr('data-tag-unique') != 'false' && $.inArray(value, $control.parent().getValues()) != -1) && $.trim(value) != '') {
 				if (!($control.parent().attr('data-tag-length') == 'false' && $control.parent().getValues().length >= parseInt($control.parent().attr('data-tag-length')))) {
 					$control.append('<span>' + value + '<div class="delete">&times;</div></span><wbr>');
 				}
@@ -207,7 +206,6 @@ $(function() {
 				
 				$control.siblings('.tag-suggest').children('ul').children('li').click(function() {
 					$control.siblings('.tag-suggest').hide();
-					// todo does not work if the tag being inserted from autocomplete == :first tag
 					$control.parent().children('.tag-control-helper').val($(this).text()).change();
 				});
 			});
