@@ -38,6 +38,14 @@ $(function() {
 	});
 
 	$('input.tag-control-helper').change(function() {
+		// prevents blur if clicked on autocomplete
+		if ($('.tag-suggest:hover').length != 0) {
+			if ($('.tag-suggest:hover').css('display') != 'none') {
+				console.log('blur not used');
+				return false;
+			}
+		}
+
 		$(this).css('width', $(this).css('min-width'));
 		$control = $(this).parent().children('.tag-value');
 		$main = $(this).siblings('input.tag-control');
@@ -51,7 +59,6 @@ $(function() {
 		});
 
 		$(this).fillToParent();
-		//$(this).siblings('.tag-suggest').hide();
 
 		$(this).val('');
 		$main.updateValue();
@@ -186,6 +193,7 @@ $(function() {
 		if ($(this).getCaret() >= 2) {
 			$control = $(this);
 			uri = $(this).siblings('.tag-control').attr('data-tag-suggest').replace('%25__filter%25', $control.val());
+			// todo do not send already filled in tags if unique rule is forced
 			json = $.getJSON(uri, null, function(json) {
 				$control.siblings('.tag-suggest').hide();
 				$container = $control.siblings('.tag-suggest').children('ul');
@@ -198,13 +206,9 @@ $(function() {
 				}
 				
 				$control.siblings('.tag-suggest').children('ul').children('li').click(function() {
-					// todo this still does not work if the removed element is shorter and the longer one moves and thus the click even fails
-					// todo also does not work if the tag being inserted from autocomplete == :first tag
-					$value = $control.parent().children('.tag-value span:last');
-					$value.next().remove();
-					$value.remove();
-					$control.siblings('.tag-control-helper').val($(this).text()).change();
 					$control.siblings('.tag-suggest').hide();
+					// todo does not work if the tag being inserted from autocomplete == :first tag
+					$control.parent().children('.tag-control-helper').val($(this).text()).change();
 				});
 			});
 		}
