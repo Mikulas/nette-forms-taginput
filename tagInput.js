@@ -141,7 +141,7 @@ $(function() {
 				// pressed down
 				if (e.keyCode == 40) {
 					if ($('.tag-suggest ul li.selected').length == 0) {
-						$tag = $('.tag-control-container.focus').siblings('.tag-suggest').children('ul li:first');
+						$tag = $('.tag-control-container.focus').children('.tag-suggest').children('ul').children('li:first');
 						$tag.addClass('selected');
 					} else {
 						$c = $('.tag-suggest ul li.selected');
