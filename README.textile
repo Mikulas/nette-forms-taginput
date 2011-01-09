@@ -47,9 +47,9 @@ bc.    public function actionTagInputSuggestControlname($filter)
 	
 don't forget to change Controlname in both action name and the array key. Componentname figures only in the getComponent() call.
 
-h2. License
+h2. License - Original BSD
 
-Copyright (c) Mikuláš Dítě, 2010
+Copyright (c) Mikuláš Dítě, 2011
 All rights reserved.
 
 *Redistribution* and use in source and binary forms, with or without
