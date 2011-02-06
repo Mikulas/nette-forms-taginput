@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Tag Input for html forms
+ * @author Mikulas Dite
+ * @copyright Mikulas Dite 2010
+ */
+
 namespace Nette\Forms;
 
 use Nette\Forms\Form;
@@ -18,7 +24,7 @@ class TagInput extends TextInput
 	/** @var string */
 	private static $renderName;
 
-	
+
 
 	/** @var int */
 	private $payloadLimit = 5;
@@ -69,7 +75,7 @@ class TagInput extends TextInput
 		if ($this->delimiter !== NULL && String::trim($this->delimiter) !== '') {
 			$control->attrs['data-tag-delimiter'] = $this->delimiter;
 		}
-		
+
 		if (count($this->suggest) !== 0) {
 			$control->attrs['data-tag-suggest'] = \Nette\Environment::getApplication()->getPresenter()->link(self::$renderName, array('filter' => '%__filter%'));
 		}

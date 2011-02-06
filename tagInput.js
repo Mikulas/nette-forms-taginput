@@ -1,3 +1,9 @@
+/**
+ * Tag Input for html forms
+ * @author Mikulas Dite
+ * @copyright Mikulas Dite 2010
+ */
+
 $(function() {
 	var default_delimiter = /[\s,]+/;
 
@@ -9,11 +15,11 @@ $(function() {
 		$(this).appendTo($control);
 		$control.prepend('<span class="tag-value"></span>');
 		$control.append('<input type="text" class="tag-control-helper">');
-		
+
 		if ($(this).attr('data-tag-suggest')) {
 			$control.append('<div class="tag-suggest"><ul></ul></div>');
 		}
-		
+
 		rules = eval('[' + ($(this).attr('data-nette-rules') || '') + ']');
 		var isUnique = false;
 		var length = false;
@@ -66,7 +72,7 @@ $(function() {
 	$('html').live('click', function(event) {
 		$('.tag-control-container').removeClass('focus');
 		$('.tag-control-container .tag-value span').removeClass('focus');
-    
+
 		if ($(event.target).is('.tag-control-container .tag-value span')) {
 			$(event.target).addClass('focus');
 		}
@@ -95,13 +101,13 @@ $(function() {
 			return;
 		}
 		keyDown = e.keyCode;
-    
+
 		if (e.keyCode == 8 || e.keyCode == 46) { // backspace or delete
 			// if input is focused and caret is most left
 			if ($('input.tag-control-helper:focus').size() != 0 && $('input.tag-control-helper:focus').getCaret() != 0) {
 				return;
 			}
-        
+
 			$control = $('.tag-control-container .tag-value span.focus');
 			$node = $control.parent();
 
@@ -116,7 +122,7 @@ $(function() {
 					$control.parent().siblings('input.tag-control-helper').focus();
 				}
 			}
-        
+
 			// if in empty focused input, remove last tag on backspace
 			if (e.keyCode == 8 && $('input.tag-control-helper:focus').size() != 0) {
 				$control = $('input.tag-control-helper:focus').siblings('.tag-value').children('span:last');
@@ -128,10 +134,10 @@ $(function() {
 			$control.remove();
 
 			$node.siblings('input.tag-control').updateValue();
-        
+
 			$node.siblings('input.tag-control-helper').fillToParent();
 			return false;
-        
+
 		// pressed arrow key
 		} else if (e.keyCode >= 37 && e.keyCode <= 40) {
 			left = e.keyCode == 37 || e.keyCode == 38;
@@ -218,7 +224,7 @@ $(function() {
 
 	}).keyup(function(e) {
 		keyDown = false;
-    
+
 		// tag ended
 		regex = $('.tag-control-helper:focus').siblings('.tag-control').attr('data-tag-delimiter') == undefined ? default_delimiter : new RegExp($main.attr('data-tag-delimiter'));
 		if ($('.tag-control-helper:focus').size() != 0 && $('.tag-control-helper:focus').val().match(regex) != null) {
@@ -248,7 +254,7 @@ $(function() {
 				if ($container.children('li').length !== 0) {
 					$control.siblings('.tag-suggest').show();
 				}
-				
+
 				$control.siblings('.tag-suggest').children('ul').children('li').click(function() {
 					$control.siblings('.tag-suggest').hide();
 					$control.parent().children('.tag-control-helper').val($(this).text()).change();
