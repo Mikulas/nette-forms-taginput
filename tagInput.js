@@ -237,6 +237,7 @@ $(function() {
 	});
 
 	var lastValue = '';
+	var request = null;
 	$('.tag-helper').keyup(function() {
 		if ($(this).val() == lastValue) {
 			return true;
@@ -245,12 +246,15 @@ $(function() {
 		if ($(this).getCaret() >= 2) {
 			$control = $(this);
 			uri = $(this).siblings('.tag-control').attr('data-tag-suggest').replace('%25__filter%25', $control.val());
-			json = $.getJSON(uri, null, function(json) {
+			if (request != null) {
+				request.abort();
+			}
+			request = $.getJSON(uri, null, function(request) {
 				$control.siblings('.tag-suggest').hide();
 				$container = $control.siblings('.tag-suggest').children('ul');
 				$container.children('li').remove();
 				// do not add to list if unique rule is forced and the value is already filled
-				$.each(json, function(id, value) {
+				$.each(request, function(id, value) {
 					if ($control.parent().attr('data-tag-unique') == 'false' || $.inArray(value, $container.parent().parent().getTagInputValues()) == -1) {
 						$container.append('<li>' + value + '</li>');
 					}
