@@ -50,6 +50,20 @@ class TagInput extends TextInput
 
 
 	/**
+	 * Filter: removes unnecessary whitespace.
+	 * @return string
+	 */
+	public function sanitize($value)
+	{
+		array_walk($value, function(&$value) {
+			$value = trim($value);
+		});
+		return $value;
+	}
+
+
+
+	/**
 	 * @return array
 	 */
 	public function getValue()
