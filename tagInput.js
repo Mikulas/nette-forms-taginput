@@ -61,8 +61,8 @@ $(function() {
 		$main = $(this).siblings('input.tag-control');
 		delimiter = $main.data('tag-delimiter') == undefined ? default_delimiter : new RegExp($main.data('tag-delimiter'));
 		$.each($(this).val().split(delimiter), function(index, value) {
-			if (!($value.parent().data('tag-unique') != 'false' && $.inArray(value, $value.parent().getTagInputValues()) != -1) && $.trim(value) != '') {
-				if (!($value.parent().data('tag-length') == 'false' && $value.parent().getTagInputValues().length >= parseInt($value.parent().daat('tag-length')))) {
+			if (!($value.parent().data('tag-unique') != false && $.inArray(value, $value.parent().getTagInputValues()) != -1) && $.trim(value) != '') {
+				if (!($value.parent().data('tag-length') == false && $value.parent().getTagInputValues().length >= parseInt($value.parent().data('tag-length')))) {
 					$value.append('<span>' + value + '<div class="delete">&times;</div></span>&zwnj;<wbr>');
 				}
 			}
@@ -230,7 +230,7 @@ $(function() {
 		keyDown = false;
 
 		// tag ended
-		regex = $('.tag-helper:focus').siblings('.tag-control').attr('data-tag-delimiter') == undefined ? default_delimiter : new RegExp($main.attr('data-tag-delimiter'));
+		regex = $('.tag-helper:focus').siblings('.tag-control').data('tag-delimiter') == undefined ? default_delimiter : new RegExp($main.data('tag-delimiter'));
 		if ($('.tag-helper:focus').size() != 0 && $('.tag-helper:focus').val().match(regex) != null) {
 			$('.tag-helper:focus').change();
 		}
@@ -245,7 +245,7 @@ $(function() {
 		lastValue = $(this).val();
 		if ($(this).getCaret() >= 2) {
 			$control = $(this);
-			uri = $(this).siblings('.tag-control').attr('data-tag-suggest').replace('%25__filter%25', $control.val());
+			uri = $(this).siblings('.tag-control').data('tag-suggest').replace('%25__filter%25', $control.val());
 			if (request != null) {
 				request.abort();
 			}
@@ -255,7 +255,7 @@ $(function() {
 				$container.children('li').remove();
 				// do not add to list if unique rule is forced and the value is already filled
 				$.each(request, function(id, value) {
-					if ($control.parent().attr('data-tag-unique') == 'false' || $.inArray(value, $container.parent().parent().getTagInputValues()) == -1) {
+					if ($control.parent().data('tag-unique') == false || $.inArray(value, $container.parent().parent().getTagInputValues()) == -1) {
 						$container.append('<li>' + value + '</li>');
 					}
 				});
@@ -293,7 +293,7 @@ $(function() {
 $.fn.updateTagInputValue = function() {
 	$(this).val($(this).parent().getTagInputValues().join(', '));
 
-	if (parseInt($(this).parent().attr('data-tag-length')) <= $(this).parent().getTagInputValues().length) {
+	if (parseInt($(this).parent().data('tag-length')) <= $(this).parent().getTagInputValues().length) {
 		$(this).siblings('.tag-helper').hide();
 	} else {
 		$(this).siblings('.tag-helper').show();
@@ -339,7 +339,7 @@ $.fn.getCaret = function(pos) {
 $.fn.validateTagInput = function(onlyCheck) {
 	$control = $(this);
 	var tags = $(this).getTagInputValues();
-	var rules = eval('[' + ($control.children('.tag-control').attr('data-nette-rules') || '') + ']');
+	var rules = eval('[' + ($control.children('.tag-control').data('nette-rules') || '') + ']');
 
 	success = true;
 	$.each(rules, function (id, rule) {
