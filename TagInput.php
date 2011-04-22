@@ -6,11 +6,13 @@
  * @copyright Mikulas Dite 2010
  */
 
-namespace Nette\Forms;
+namespace Nette\Forms\Controls;
 
 use Nette\Forms\Form;
-use Nette\Forms\TextInput;
-use Nette\String;
+use Nette\Forms\IControl;
+use Nette\Utils\Strings as String;
+use Nette\Environment;
+use Nette\Application\Responses\JsonResponse;
 
 
 class TagInput extends TextInput
@@ -55,6 +57,8 @@ class TagInput extends TextInput
 	 */
 	public function sanitize($value)
 	{
+		if (!is_array($value))
+			$value = array($value);
 		array_walk($value, function(&$value) {
 			$value = trim($value);
 		});
@@ -91,7 +95,7 @@ class TagInput extends TextInput
 		}
 
 		if (count($this->suggest) !== 0) {
-			$control->attrs['data-tag-suggest'] = \Nette\Environment::getApplication()->getPresenter()->link(self::$renderName, array('filter' => '%__filter%'));
+			$control->attrs['data-tag-suggest'] = Environment::getApplication()->getPresenter()->link(self::$renderName, array('filter' => '%__filter%'));
 		}
 		return $control;
 	}
@@ -105,7 +109,7 @@ class TagInput extends TextInput
 	public function setDefaultValue($value)
 	{
 		if (!is_array($value)) {
-			throw new \InvalidArgumentException("Invalid argument type passed to " . __METHOD__ . ", expected array.");
+			throw new \Nette\InvalidArgumentException("Invalid argument type passed to " . __METHOD__ . ", expected array.");
 		}
 		parent::setDefaultValue(implode(', ', $value));
 		return $this;
@@ -125,7 +129,7 @@ class TagInput extends TextInput
 		switch($operation) {
 			case Form::EQUAL:
 				if (!is_array($arg))
-					throw new \InvalidArgumentException(__METHOD__ . '(' . $operation . ') must be compared to array.');
+					throw new \Nette\InvalidArgumentException(__METHOD__ . '(' . $operation . ') must be compared to array.');
 		}
 
 		return parent::addRule($operation, $message, $arg);
@@ -142,7 +146,7 @@ class TagInput extends TextInput
 		$this->suggest = array();
 		foreach ($suggest as $tag) {
 			if (!is_scalar($tag) && !method_exists($tag, '__toString')) {
-				throw new \InvalidArgumentException(__CLASS__ . ' can only use autocomplete with scalar values or objects with defined conversion to string.');
+				throw new \Nette\InvalidArgumentException(__CLASS__ . ' can only use autocomplete with scalar values or objects with defined conversion to string.');
 			}
 			if (!array_search($tag, $this->suggest)) {
 				$this->suggest[] = $tag;
@@ -164,7 +168,7 @@ class TagInput extends TextInput
 				break;
 			}
 		}
-		$presenter->sendResponse(new \Nette\Application\JsonResponse($data));
+		$presenter->sendResponse(new JsonResponse($data));
 	}
 
 
@@ -190,12 +194,11 @@ class TagInput extends TextInput
 	 * @param array $suggest
 	 * @return TagInput provides fluent interface
 	 */
-	public static function addTag(Form $form, $name, $label = NULL, $suggest = NULL)
+	public static function addTag(Form $form, $name, $label = NULL)
 	{
 		self::$renderName = 'tagInputSuggest' . ucfirst($name);
 
 		$form[$name] = new self($label);
-		$form[$name]->setSuggest($suggest === NULL ? array() : $suggest);
 		return $form[$name];
 	}
 
@@ -207,11 +210,11 @@ class TagInput extends TextInput
 
 	/**
 	 * Equal validator: are control's value and second parameter equal?
-	 * @param  IFormControl
+	 * @param  IControl
 	 * @param  mixed
 	 * @return bool
 	 */
-	public static function validateEqual(IFormControl $control, $arg)
+	public static function validateEqual(IControl $control, $arg)
 	{
 		$value = $control->getValue();
 		sort($value);
@@ -223,10 +226,10 @@ class TagInput extends TextInput
 
 	/**
 	 * Filled validator: is control filled?
-	 * @param  IFormControl
+	 * @param  IControl
 	 * @return bool
 	 */
-	public static function validateFilled(IFormControl $control)
+	public static function validateFilled(IControl $control)
 	{
 		return count($control->getValue()) !== 0;
 	}
