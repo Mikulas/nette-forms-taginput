@@ -34,8 +34,8 @@ class TagInput extends TextInput
 	/** @var string regex */
 	private $delimiter = '[\s,]+';
 
-	/** @var array autocomplete */
-	private $suggest;
+	/** @var callback returning array */
+	private $suggestCallback;
 
 
 
@@ -94,9 +94,8 @@ class TagInput extends TextInput
 			$control->attrs['data-tag-delimiter'] = $this->delimiter;
 		}
 
-		if (count($this->suggest) !== 0) {
-			$control->attrs['data-tag-suggest'] = Environment::getApplication()->getPresenter()->link(self::$renderName, array('filter' => '%__filter%'));
-		}
+		$control->attrs['data-tag-suggest'] = Environment::getApplication()->getPresenter()->link(self::$renderName, array('filter' => '%__filter%'));
+
 		return $control;
 	}
 
@@ -141,26 +140,26 @@ class TagInput extends TextInput
 	 * @param array $suggest
 	 * @return TagInput provides fluent interface
 	 */
-	public function setSuggest(array $suggest)
+	public function setSuggestCallback($suggest)
 	{
-		$this->suggest = array();
-		foreach ($suggest as $tag) {
-			if (!is_scalar($tag) && !method_exists($tag, '__toString')) {
-				throw new \Nette\InvalidArgumentException(__CLASS__ . ' can only use autocomplete with scalar values or objects with defined conversion to string.');
-			}
-			if (!array_search($tag, $this->suggest)) {
-				$this->suggest[] = $tag;
-			}
-		}
+		$this->suggestCallback = callback($suggest);
 		return $this;
 	}
 
 
 
+	/**
+	 * @param \Nette\Application\UI\Presenter presenter
+	 * @param string presenter
+	 */
 	public function renderResponse($presenter, $filter)
 	{
 		$data = array();
-		foreach ($this->suggest as $tag) {
+		if (!($this->suggestCallback instanceof \Nette\Callback)) {
+			throw new \Nette\InvalidStateException('Callback not set.');
+		}
+		
+		foreach ($this->suggestCallback->invoke($filter, $this->payloadLimit) as $tag) {
 			if (String::startsWith(String::lower($tag), String::lower($filter))) {
 				$data[] = $tag;
 			}
