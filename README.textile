@@ -33,9 +33,10 @@ bc.    $form->addTag('tags')
 	    
 h2. Autocomplete
 
-Simply specify the array of tags as a third argument of addTag() call:
+Set the callback function via the setter
 
-bc.    $form->addTag('tag', NULL, array('tags', 'to', 'suggest'));
+bc.    $form->addTag('tag')
+	    ->setSuggestCallback(function($filter, $count) { ... }); // or callback
 
 You have create an action on the presenter (or mutual ancestor of presenters) where you want to used this control.
 
