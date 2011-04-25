@@ -57,8 +57,6 @@ class TagInput extends TextInput
 	 */
 	public function sanitize($value)
 	{
-		if (!is_array($value))
-			$value = array($value);
 		array_walk($value, function(&$value) {
 			$value = trim($value);
 		});
@@ -72,7 +70,15 @@ class TagInput extends TextInput
 	 */
 	public function getValue()
 	{
+		$filters = $this->filters;
+		$this->filters = array();
 		$value = String::split(parent::getValue(), "\x01" . $this->delimiter . "\x01");
+		$this->filters = $filters;
+
+		foreach ($this->filters as $filter) {
+			$value = $filter($value);
+		}
+
 		if ($value[0] == '' && count($value) === 1) {
 			$value = array();
 		}
