@@ -72,15 +72,18 @@ class TagInput extends TextInput
 	{
 		$filters = $this->filters;
 		$this->filters = array();
-		$value = String::split(parent::getValue(), "\x01" . $this->delimiter . "\x01");
+		$res = String::split(parent::getValue(), "\x01" . $this->delimiter . "\x01");
 		$this->filters = $filters;
 
 		foreach ($this->filters as $filter) {
-			$value = $filter($value);
+			$res = $filter($res);
 		}
 
-		if ($value[0] == '' && count($value) === 1) {
-			$value = array();
+		$value = array();
+		foreach ($res as $tag) {
+			if ($tag != '') {
+				$value[] = $tag;
+			}
 		}
 
 		return $value;
