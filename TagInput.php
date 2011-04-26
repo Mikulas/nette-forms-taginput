@@ -29,13 +29,13 @@ class TagInput extends TextInput
 
 
 	/** @var int */
-	private $payloadLimit = 5;
+	protected $payloadLimit = 5;
 
 	/** @var string regex */
-	private $delimiter = '[\s,]+';
+	protected $delimiter = '[\s,]+';
 
 	/** @var callback returning array */
-	private $suggestCallback;
+	protected $suggestCallback;
 
 
 
@@ -82,6 +82,7 @@ class TagInput extends TextInput
 		if ($value[0] == '' && count($value) === 1) {
 			$value = array();
 		}
+
 		return $value;
 	}
 
@@ -100,7 +101,9 @@ class TagInput extends TextInput
 			$control->attrs['data-tag-delimiter'] = $this->delimiter;
 		}
 
-		$control->attrs['data-tag-suggest'] = Environment::getApplication()->getPresenter()->link(self::$renderName, array('filter' => '%__filter%'));
+		if ($this->suggestCallback !== NULL) {
+			$control->attrs['data-tag-suggest'] = Environment::getApplication()->getPresenter()->link(self::$renderName, array('word_filter' => '%__filter%'));
+		}
 
 		return $control;
 	}
@@ -120,6 +123,20 @@ class TagInput extends TextInput
 		return $this;
 	}
 
+
+
+	/**
+	 * @param int $limit
+	 * @return TagInput provides fluent interface
+	 */
+	public function setPayloadLimit($limit)
+	{
+		if ($limit < 0)
+			throw new \Nette\InvalidArgumentException("Invalid limit, expected positive integer.");
+
+		$this->payloadLimit = $limit;
+		return $this;
+	}
 
 
 	/**
@@ -164,15 +181,14 @@ class TagInput extends TextInput
 		if (!($this->suggestCallback instanceof \Nette\Callback)) {
 			throw new \Nette\InvalidStateException('Callback not set.');
 		}
-		
+
 		foreach ($this->suggestCallback->invoke($filter, $this->payloadLimit) as $tag) {
-			if (String::startsWith(String::lower($tag), String::lower($filter))) {
-				$data[] = $tag;
-			}
 			if (count($data) >= $this->payloadLimit) {
 				break;
 			}
+			$data[] = (string) $tag;
 		}
+
 		$presenter->sendResponse(new JsonResponse($data));
 	}
 
@@ -385,4 +401,5 @@ class TagInput extends TextInput
 	{
 		return count(array_unique($control->getValue())) === count($control->getValue());
 	}
+
 }
