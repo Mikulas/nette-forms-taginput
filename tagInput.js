@@ -324,8 +324,9 @@ $.fn.fillToParent = function() {
 $.fn.getCaret = function(pos) {
 	if ($(this).get(0).createTextRange) {
 		var r = document.selection.createRange().duplicate();
-		r.moveEnd('character', o.value.length);
-		if (r.text == '') return $(this).get(0).value.length
+		r.moveEnd('character', pos);
+		if (r.text == '')
+			return $(this).get(0).value.length;
 		return $(this).get(0).value.lastIndexOf(r.text);
 	} else {
 		return $(this).get(0).selectionStart;
