@@ -239,7 +239,7 @@ $(function() {
 	var lastValue = '';
 	var request = null;
 	$('.tag-helper').keyup(function() {
-		if ($(this).val() == lastValue) {
+		if (typeof ($(this).siblings('.tag-control').data('tag-suggest')) === 'undefined' || $(this).val() == lastValue) {
 			return true;
 		}
 		lastValue = $(this).val();
