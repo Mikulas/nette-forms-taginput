@@ -24,7 +24,7 @@ class TagInput extends TextInput
 
 
 	/** @var string */
-	private static $renderName;
+	private $renderName;
 
 
 
@@ -105,7 +105,7 @@ class TagInput extends TextInput
 		}
 
 		if ($this->suggestCallback !== NULL) {
-			$control->attrs['data-tag-suggest'] = Environment::getApplication()->getPresenter()->link(self::$renderName, array('word_filter' => '%__filter%'));
+			$control->attrs['data-tag-suggest'] = Environment::getApplication()->getPresenter()->link($this->renderName, array('word_filter' => '%__filter%'));
 		}
 
 		return $control;
@@ -220,9 +220,8 @@ class TagInput extends TextInput
 	 */
 	public static function addTag(Form $form, $name, $label = NULL)
 	{
-		self::$renderName = 'tagInputSuggest' . ucfirst($name);
-
 		$form[$name] = new self($label);
+		$form[$name]->renderName = 'tagInputSuggest' . ucfirst($name);
 		return $form[$name];
 	}
 
