@@ -34,6 +34,9 @@ class TagInput extends TextInput
 	/** @var string regex */
 	protected $delimiter = '[\s,]+';
 
+	/** @var string */
+	protected $defaultDelimiter = ', ';
+
 	/** @var callback returning array */
 	protected $suggestCallback;
 
@@ -46,6 +49,18 @@ class TagInput extends TextInput
 	public function setDelimiter($delimiter)
 	{
 		$this->delimiter = $delimiter;
+		return $this;
+	}
+
+
+
+	/**
+	 * @param string $delimiter
+	 * @return TagInput provides fluent interface
+	 */
+	public function setDefaultDelimiter($delimiter)
+	{
+		$this->defaultDelimiter = $delimiter;
 		return $this;
 	}
 
@@ -122,7 +137,7 @@ class TagInput extends TextInput
 		if (!is_array($value)) {
 			throw new \Nette\InvalidArgumentException("Invalid argument type passed to " . __METHOD__ . ", expected array.");
 		}
-		parent::setDefaultValue(implode(', ', $value));
+		parent::setDefaultValue(implode($this->defaultDelimiter, $value));
 		return $this;
 	}
 
