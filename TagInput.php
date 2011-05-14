@@ -35,7 +35,7 @@ class TagInput extends TextInput
 	protected $delimiter = '[\s,]+';
 
 	/** @var string */
-	protected $defaultDelimiter = ', ';
+	protected $joiner = ', ';
 
 	/** @var callback returning array */
 	protected $suggestCallback;
@@ -58,9 +58,9 @@ class TagInput extends TextInput
 	 * @param string $delimiter
 	 * @return TagInput provides fluent interface
 	 */
-	public function setDefaultDelimiter($delimiter)
+	public function setJoiner($joiner)
 	{
-		$this->defaultDelimiter = $delimiter;
+		$this->joiner = $joiner;
 		return $this;
 	}
 
@@ -119,6 +119,10 @@ class TagInput extends TextInput
 			$control->attrs['data-tag-delimiter'] = $this->delimiter;
 		}
 
+		if ($this->joiner !== NULL && String::trim($this->joiner) !== '') {
+			$control->attrs['data-tag-joiner'] = $this->joiner;
+		}
+	
 		if ($this->suggestCallback !== NULL) {
 			$control->attrs['data-tag-suggest'] = Environment::getApplication()->getPresenter()->link($this->renderName, array('word_filter' => '%__filter%'));
 		}
@@ -137,7 +141,7 @@ class TagInput extends TextInput
 		if (!is_array($value)) {
 			throw new \Nette\InvalidArgumentException("Invalid argument type passed to " . __METHOD__ . ", expected array.");
 		}
-		parent::setDefaultValue(implode($this->defaultDelimiter, $value));
+		parent::setDefaultValue(implode($this->joiner, $value));
 		return $this;
 	}
 
