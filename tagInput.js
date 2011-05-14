@@ -6,6 +6,7 @@
 
 $(function() {
 	var default_delimiter = /[\s,]+/;
+	var default_joiner = ', ';
 
 	$('input.tag-control').hide();
 
@@ -13,7 +14,7 @@ $(function() {
 		$container = $('<span></span>').addClass('tag-container').attr('for', $(this).attr('id'));
 		$value = $('<span></span>').addClass('tag-value');
 		$helper = $('<input>').addClass('tag-helper');
-		
+
 		$container.appendTo($(this).parent());
 		$container.append($(this));
 		$container.prepend($value);
@@ -291,7 +292,8 @@ $(function() {
 });
 
 $.fn.updateTagInputValue = function() {
-	$(this).val($(this).parent().getTagInputValues().join(', '));
+	joiner = $(this).data('tag-joiner') == undefined ? default_joiner : $(this).data('tag-joiner');
+	$(this).val($(this).parent().getTagInputValues().join(joiner));
 
 	if (parseInt($(this).parent().data('tag-length')) <= $(this).parent().getTagInputValues().length) {
 		$(this).siblings('.tag-helper').hide();
