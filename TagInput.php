@@ -11,7 +11,6 @@ namespace Nette\Forms\Controls;
 use Nette\Forms\Form;
 use Nette\Forms\IControl;
 use Nette\Utils\Strings;
-use Nette\Environment;
 use Nette\Application\Responses\JsonResponse;
 
 
@@ -124,7 +123,11 @@ class TagInput extends TextInput
 		}
 	
 		if ($this->suggestCallback !== NULL) {
-			$control->attrs['data-tag-suggest'] = Environment::getApplication()->getPresenter()->link($this->renderName, array('word_filter' => '%__filter%'));
+			$form = $this->getForm();
+			if (!$form || !$form instanceof Form) {
+				throw new InvalidStateException("Tag Input support only Nette\Application\UI\Form");
+			}
+			$control->attrs['data-tag-suggest'] = $form->getPresenter()->link($this->renderName, array('word_filter' => '%__filter%'));
 		}
 
 		return $control;
