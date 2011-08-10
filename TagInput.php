@@ -3,7 +3,7 @@
 /**
  * Tag Input for html forms
  * @author Mikulas Dite
- * @copyright Mikulas Dite 2010
+ * @copyright Mikulas Dite 2010-11
  */
 
 namespace Nette\Forms\Controls;
@@ -125,7 +125,7 @@ class TagInput extends TextInput
 		if ($this->suggestCallback !== NULL) {
 			$form = $this->getForm();
 			if (!$form || !$form instanceof Form) {
-				throw new InvalidStateException("Tag Input support only Nette\Application\UI\Form");
+				throw new InvalidStateException("TagInput supports only Nette\Application\UI\Form.");
 			}
 			$control->attrs['data-tag-suggest'] = $form->getPresenter()->link($this->renderName, array('word_filter' => '%__filter%'));
 		}
