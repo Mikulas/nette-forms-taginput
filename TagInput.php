@@ -10,7 +10,7 @@ namespace Nette\Forms\Controls;
 
 use Nette\Forms\Form;
 use Nette\Forms\IControl;
-use Nette\Utils\Strings as String;
+use Nette\Utils\Strings;
 use Nette\Environment;
 use Nette\Application\Responses\JsonResponse;
 
@@ -87,7 +87,7 @@ class TagInput extends TextInput
 	{
 		$filters = $this->filters;
 		$this->filters = array();
-		$res = String::split(parent::getValue(), "\x01" . $this->delimiter . "\x01");
+		$res = Strings::split(parent::getValue(), "\x01" . $this->delimiter . "\x01");
 		$this->filters = $filters;
 
 		foreach ($this->filters as $filter) {
@@ -115,11 +115,11 @@ class TagInput extends TextInput
 		$control = parent::getControl();
 		$control->class[] = "tag-control";
 
-		if ($this->delimiter !== NULL && String::trim($this->delimiter) !== '') {
+		if ($this->delimiter !== NULL && Strings::trim($this->delimiter) !== '') {
 			$control->attrs['data-tag-delimiter'] = $this->delimiter;
 		}
 
-		if ($this->joiner !== NULL && String::trim($this->joiner) !== '') {
+		if ($this->joiner !== NULL && Strings::trim($this->joiner) !== '') {
 			$control->attrs['data-tag-joiner'] = $this->joiner;
 		}
 	
@@ -374,7 +374,7 @@ class TagInput extends TextInput
 	public static function validateInteger(TextBase $control)
 	{
 		foreach ($control->getValue() as $tag) {
-			if (!String::match($tag, '/^-?[0-9]+$/')) {
+			if (!Strings::match($tag, '/^-?[0-9]+$/')) {
 				return FALSE;
 			}
 		}
@@ -391,7 +391,7 @@ class TagInput extends TextInput
 	public static function validateFloat(TextBase $control)
 	{
 		foreach ($control->getValue() as $tag) {
-			if (!String::match($tag, '/^-?[0-9]*[.,]?[0-9]+$/')) {
+			if (!Strings::match($tag, '/^-?[0-9]*[.,]?[0-9]+$/')) {
 				return FALSE;
 			}
 		}
