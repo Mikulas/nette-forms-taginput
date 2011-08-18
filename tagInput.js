@@ -317,7 +317,7 @@ $.fn.getTagInputValues = function() {
 
 $.fn.fillToParent = function() {
 	$(this).css('width', 0);
-	width = $(this).parent().width() - $(this).position()['left'];
+	width = $(this).parent().position()['left'] + $(this).parent().width() - $(this).position()['left'];
 	width = width < 50 ? $(this).parent().width() : width;
 	$(this).css('width', width);
 	return $(this);
