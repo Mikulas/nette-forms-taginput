@@ -68,6 +68,9 @@ function TagInputControl() {
 	
 	this.onKeyDown = function(e) {
 		if (kb.input(e)) { // just writing letters
+			if (i.getMaxLen() === i.tags.children('.tag').length)
+				return false;
+
 			i.tags.children('.focus').removeClass('focus');
 			i.stretchHelperToContainer();
 
@@ -141,7 +144,7 @@ function TagInputControl() {
 	this.getMaxLen = function() {
 		var length = 0;
 		$.each(i.rules, function(index, rule) {
-			if (rule.op === ':maxLength' || rule.op === ':length') length = rule.op > length ? rule.op : length;
+			if (rule.op === ':maxLength' || rule.op === ':length') length = rule.arg > length ? rule.arg : length;
 		});
 		return length;
 	};
