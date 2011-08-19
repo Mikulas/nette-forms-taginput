@@ -4,8 +4,6 @@
  * @copyright Mikuláš Dítě 2010-11
  */
 
-function d() {console.log(arguments);}
-
 function Keyboard() {
 	this.remove = function(e) {
 		return e.keyCode == 8;
@@ -188,6 +186,14 @@ function TagInputControl() {
 		return unique;
 	};
 
+	this.newTags = function() {
+		var original = true;
+		$.each(i.rules, function(index, rule) {
+			if (rule.op === ':original') original = false;
+		});
+		return original;
+	};
+
 	this.isNumeric = function() {
 		var numeric = false;
 		$.each(i.rules, function(index, rule) {
@@ -234,6 +240,14 @@ function TagInputControl() {
 		value = value.trim();
 		if (!value || (i.isUnique() && $.inArray(value, i.val()) !== -1))
 			return false;
+
+		if (i.hasSuggest() && !i.newTags()) {
+			var found = false;
+			i.suggest.children().each(function(x, li) {
+				if (value === $(li).text()) found = true;
+			});
+			if (!found) return false;
+		}
 
 		var tag = $('<span/>').addClass('tag');
 		tag.text(value);
@@ -291,7 +305,6 @@ TagInput.create = function(control) {
 	if (input.hasSuggest()) {
 		input.suggest = $('<ul/>').addClass('tag-suggest');
 		input.suggest.hide();
-		console.log(input.suggest);
 		input.container.append(input.suggest);
 	}
 
@@ -370,7 +383,6 @@ jQuery.fn.compare = function(t) {
 
 Nette.validateRuleTagControl = function(tags, op, arg)
 {
-	d(tags, op, arg);
 	switch (op) {
 	case ':filled':
 		return tags.length !== 0;

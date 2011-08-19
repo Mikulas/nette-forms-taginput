@@ -20,6 +20,9 @@ class TagInput extends TextInput
 	/** @var string rule */
 	const UNIQUE = ':unique';
 
+	/** @var string rule Users cannot create new tags */
+	const ORIGINAL = ':original';
+
 
 
 	/** @var string */
@@ -196,6 +199,8 @@ class TagInput extends TextInput
 	public function setSuggestCallback($suggest)
 	{
 		$this->suggestCallback = callback($suggest);
+		\Nette\Forms\Rules::$defaultMessages[self::UNIQUE] = 'Please insert each tag only once.';
+		\Nette\Forms\Rules::$defaultMessages[self::ORIGINAL] = 'Please do use only suggested tags.';
 		return $this;
 	}
 
@@ -429,6 +434,25 @@ class TagInput extends TextInput
 	public static function validateUnique(TagInput $control)
 	{
 		return count(array_unique($control->getValue())) === count($control->getValue());
+	}
+
+
+	
+	/**
+	 * Are all tags from suggest?
+	 * @param  TagInput
+	 * @return bool
+	 */
+	public static function validateOriginal(TagInput $control)
+	{
+		foreach ($control->getValue() as $tag) {
+			$found = FALSE;
+			foreach ($control->suggestCallback->invoke($control->value, 1) as $suggest) {
+				if ($tag === $suggest) return TRUE;
+			}
+			if (!$found) return FALSE;
+		}
+		return TRUE;
 	}
 
 }
