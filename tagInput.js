@@ -69,8 +69,11 @@ function TagInputControl() {
 	this.control = undefined;
 	this.tags = undefined;
 	this.helper = undefined;
+	this.suggest = undefined;
 
 	this.rules = undefined;
+
+	this.dontBlur = false;
 	
 	this.onKeyDown = function(e) {
 		if (kb.input(e)) { // just writing letters
@@ -117,6 +120,28 @@ function TagInputControl() {
 		}
 	};
 
+	this.onSuggest = function() {
+		if (!i.hasSuggest()) return false;
+
+		$.ajax(i.hasSuggest(), {
+			success: function(payload) {
+				i.suggest.children().remove();
+				$.each(payload, function(x, v) {
+					var item = $('<li/>').html(v);
+					item.click(function() {
+						i.helper.val(item.html());
+						i.helperToTag();
+						i.suggest.hide();
+						i.dontBlur = true;
+						i.focus();
+					});
+					i.suggest.append(item);
+				});
+				i.suggest.show();
+			}
+		});
+	};
+
 	this.helperToTag = function() {
 		var value = i.helper.val().trim();
 		i.helper.val('');
@@ -137,10 +162,22 @@ function TagInputControl() {
 		i.container.addClass('focus');
 	};
 
-	this.onBlur = function() {
-		i.container.removeClass('focus');
-		i.tags.children().removeClass('focus');
-		i.helperToTag();
+	this.onBlur = function(e) {
+		// if blurred because suggestion was clicked, we need time to catch it
+		setTimeout(function() {
+			i.suggest.hide();
+			if (i.dontBlur) {
+				i.dontBlur = false;
+				return true;
+			}
+			i.container.removeClass('focus');
+			i.tags.children().removeClass('focus');
+			i.helperToTag();
+		}, 200);
+	};
+
+	this.hasSuggest = function() {
+		return i.control.data('tag-suggest');
 	};
 
 	this.isUnique = function() {
@@ -251,7 +288,15 @@ TagInput.create = function(control) {
 	input.container.append(input.tags);
 	input.container.append(input.helper);
 
+	if (input.hasSuggest()) {
+		input.suggest = $('<ul/>').addClass('tag-suggest');
+		input.suggest.hide();
+		console.log(input.suggest);
+		input.container.append(input.suggest);
+	}
+
 	input.helper.keydown(input.onKeyDown);
+	input.helper.keyup(input.onSuggest);
 	input.helper.bind('paste cut change', input.onChange);
 
 	input.rules = eval('[' + (input.control.data('nette-rules') || '') + ']');
