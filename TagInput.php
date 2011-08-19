@@ -117,7 +117,7 @@ class TagInput extends TextInput
 			if (!$form || !$form instanceof Form) {
 				throw new InvalidStateException("TagInput supports only Nette\\Application\\UI\\Form.");
 			}
-			$control->attrs['data-tag-suggest'] = $form->getPresenter()->link($this->renderName, array('word_filter' => '%__filter%'));
+			$control->attrs['data-tag-suggest'] = $form->getPresenter()->link($this->renderName, array('word_filter' => '%filter%'));
 		}
 		$container->add($control);
 		$container->add(\Nette\Utils\Html::el('script')->setHtml('TagInput.create("#frm' . $this->form->name . '-' . $this->name . '");'));
@@ -447,7 +447,7 @@ class TagInput extends TextInput
 	{
 		foreach ($control->getValue() as $tag) {
 			$found = FALSE;
-			foreach ($control->suggestCallback->invoke($control->value, 1) as $suggest) {
+			foreach ($control->suggestCallback->invoke($tag, 1) as $suggest) {
 				if ($tag === $suggest) return TRUE;
 			}
 			if (!$found) return FALSE;
