@@ -40,12 +40,15 @@ function Keyboard() {
 	this.whitespace = function(e) {
 		return $.inArray(e.keyCode, [13, 32]) !== -1;
 	};
+	this.number = function(e) {
+		var letter = /^[a-i0-9-]+$/; // a-i numpad 1-9, numbers
+		return $.inArray(e.keyCode, [96]) !== -1 // numpad zero
+			|| letter.test(this.keyToChar(e.keyCode));
+	};
 	this.input = function(e) {
-		//d(e.keyCode, this.keyToChar(e.keyCode));
-		if ($.inArray(e.keyCode, [96, 189]) !== -1) // numpad zero, hyphen
-			return true;
 		var letter = /^[a-iA-Z\u00C0-\u02A00-9-]+$/; // a-i numpad 1-9, A-Z letters, accented letters, numbers, hyphen
-		return letter.test(this.keyToChar(e.keyCode));
+		return $.inArray(e.keyCode, [96, 189]) !== -1  // numpad zero, hyphen
+			|| letter.test(this.keyToChar(e.keyCode));
 	};
 
 	this.keyToChar = function(key) {
@@ -68,7 +71,9 @@ function TagInputControl() {
 	
 	this.onKeyDown = function(e) {
 		if (kb.input(e)) { // just writing letters
-			if (i.getMaxLen() === i.tags.children('.tag').length)
+			if (i.getMaxLen() !== 0 && i.getMaxLen() === i.tags.children('.tag').length)
+				return false;
+			if (i.isNumeric() && !kb.number(e))
 				return false;
 
 			i.tags.children('.focus').removeClass('focus');
@@ -139,6 +144,14 @@ function TagInputControl() {
 			if (rule.op === ':unique') unique = true;
 		});
 		return unique;
+	};
+
+	this.isNumeric = function() {
+		var numeric = false;
+		$.each(i.rules, function(index, rule) {
+			if (rule.op === ':integer' || rule.op === ':float') numeric = true;
+		});
+		return numeric;
 	};
 
 	this.getMaxLen = function() {
@@ -217,6 +230,7 @@ TagInput.create = function(control) {
 	input.tags = $('<span/>');
 	input.helper = $('<input type="text"/>');
 
+	input.control.get(0).type = "tag"; // not working in IE
 	input.control.hide();
 
 	input.control.after(input.container);
@@ -298,6 +312,7 @@ jQuery.fn.compare = function(t) {
 
 Nette.validateRuleTagControl = function(tags, op, arg)
 {
+	d(tags, op, arg);
 	switch (op) {
 	case ':filled':
 		return tags.length !== 0;
@@ -319,7 +334,7 @@ Nette.validateRuleTagControl = function(tags, op, arg)
 		return (arg[0] === null || tags.length >= arg[0]) && (arg[1] === null || tags.length <= arg[1]);
 
 	case ':integer':
-		success = true;
+		var success = true;
 		$.each(tags, function(index, tag) {
 			if (!tag.match(/^-?[0-9]+$/))
 				success = false;
@@ -327,7 +342,7 @@ Nette.validateRuleTagControl = function(tags, op, arg)
 		return success;
 
 	case ':float':
-		success = true;
+		var success = true;
 		$.each(tags, function(index, tag) {
 			if (!tag.match(/^-?[0-9]*[.,]?[0-9]+$/))
 				success = false
@@ -342,7 +357,7 @@ Nette.validateRuleTagControl = function(tags, op, arg)
 		Nette.addError($control.children('.tag-control').get(0), rule.msg.replace('%value', $control.getTagInputValues().join(', ')));
 	}
 	return false;
-}
+};
 
 
 Nette.validateForm = function(sender) {
@@ -354,14 +369,13 @@ Nette.validateForm = function(sender) {
 		var elem = form.elements[i];
 		if (!(elem.nodeName.toLowerCase() in {input:1, select:1, textarea:1}) || (elem.type in {hidden:1, submit:1, image:1, reset: 1}) || elem.disabled || elem.readonly) {
 			continue;
-		}
-		if ($(elem).is('.tag-control')) {
+
+		} else if ($(elem).is('[type=tag]')) {
 			if (!$(elem).parent().validateTagInput()) {
 				return false;
 			}
-			continue;
-		}
-		if (!Nette.validateControl(elem)) {
+
+		} else if (!Nette.validateControl(elem)) {
 			return false;
 		}
 	}
