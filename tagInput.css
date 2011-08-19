@@ -10,7 +10,7 @@
 .tag-container .tag:hover .tag-delete {display: inline;}
 .tag-container .tag:hover .tag-delete:hover {cursor: pointer;}
 
-.tag-container .tag-suggest {background-color: #FFF; width: 300px; margin-top: 5px; padding: 0; position: absolute; display: none; z-index: 999;}
-.tag-container .tag-suggest li {list-style: none; margin-left: -30px; margin-right: 5px; padding: 0;}
+.tag-container .tag-suggest {background-color: #FFF; width: 300px; margin-top: 5px; padding: 0 0 3px 0; position: absolute; display: none; z-index: 999;}
+.tag-container .tag-suggest li {list-style: none; margin: 0 3px 0 3px; padding: 0 0 0 3px;}
 .tag-container .tag-suggest li:hover {background-color: #BBCEF1; cursor: pointer;}
 .tag-container .tag-suggest li.selected {background-color: #BBCEF1;}
