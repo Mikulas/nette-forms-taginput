@@ -1,0 +1,63 @@
+h1. TagInput
+
+* _Author_: Mikuláš Dítě
+* _Copyright_: (c) Mikuláš Dítě 2010
+
+h2. Example
+
+Online demo at "http://taginput.injectionsoft.com/":http://taginput.injectionsoft.com/
+!http://files.droplr.com/files/71192952/qVGi.Screen%20shot%202010-12-11%20at%2012%3A06%3A19.png!
+
+!http://files.droplr.com/files/71192952/DbQR.Screen%20shot%202010-12-11%20at%2012%3A05%3A25.png!
+
+h2. Requirements
+
+* Nette2.0-alpha - https://nette.org/
+* jQuery1.4+ - http://jquery.com/
+
+h2. Usage
+
+Put `tagInput.css` and `tagInput.js` to public directory and link them to the layout. For example, you might use:
+
+bc.    <link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/css/tagInput.css" type="text/css">
+        <script type="text/javascript" src="{$basePath}/js/tagInput.js"></script>
+
+then, insert `TagInput.php` anywhere your RobotLoader looks for classes. In your `BasePresenter.php::startup()` register this component with:
+
+bc.    \Nette\Forms\TagInput::register();
+    
+now, you may simply add this control to any `\Nette\Forms\Form` using
+
+bc.    $form->addTag('tags')
+	    ->setDefaultValue($page->tags);
+	    
+h2. Autocomplete
+
+Set the callback function via the setter
+
+bc.    $form->addTag('tag')
+	    ->setSuggestCallback(function($filter, $count) { ... }); // or callback
+
+You have create an action on the presenter (or mutual ancestor of presenters) where you want to used this control.
+
+bc.    public function actionTagInputSuggestControlname($filter)
+	{
+		$form = $this->getComponent('componentname');
+		$form['controlname']->renderResponse($this, $filter);
+	}
+	
+don't forget to change Controlname in both action name and the array key. Componentname figures only in the getComponent() call.
+
+h2. License - Original BSD
+
+Copyright (c) Mikuláš Dítě, 2011
+All rights reserved.
+
+*Redistribution* and use in source and binary forms, with or without
+modification, are *permitted* provided that the following conditions are met:
+# Redistributions of source code *must retain* the above *copyright* notice, this list of conditions and the following disclaimer.
+# Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+# All advertising materials mentioning features or use of this software must display the following acknowledgement: This product includes software developed by the author.
+# Neither the name of the author nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+This software is *provided* by author *_as_* *_is_* and any express or implied warranties, including, but not limited to, the implied warranties of merchantability and fitness for a particular purpose are disclaimed. In no event shall author be liable for any direct, indirect, incidental, special, exemplary, or consequential damages (including, but not limited to, procurement of substitute goods or services; loss of use, data, or profits; or business interruption) however caused and on any theory of liability, whether in contract, strict liability, or tort (including negligence or otherwise) arising in any way out of the use of this software, even if advised of the possibility of such damage.

@@ -1,0 +1,16 @@
+.tag-container {font-family: "Lucida Grande", sans-serif; font-size: 11px; background: #FFF; padding: 3px; display: block; width: 300px; max-width: 300px; border: 1px solid darkgray; display: block;}
+.tag-container.focus {border: 1px solid activeborder; outline: 2px auto -webkit-focus-ring-color;}
+
+.tag-container input {border: 0; display: inline; margin: 1px 0; padding: 0; outline: none; line-height: 160%;}
+
+.tag-container .tag {background-color: #DEE7F8; -moz-border-radius: 9px; border-radius: 9px; margin: 2px 3px 0 0; padding: 0 10px 0 10px; border: 1px #A4BDED solid; word-wrap: none; white-space: nowrap; display: inline-block}.tag-container .tag:hover {background-color: #BBCEF1; border-color: #6D95E0; cursor: default;}
+.tag-container .tag.focus {background-color: #598AEC; border-color: #598AEC; color: #FFF;}
+.tag-container .tag .tag-delete {display: none; margin-left: 4px; margin-right: -13px;}
+.tag-container .tag:hover {padding: 0 15px 0 5px;}
+.tag-container .tag:hover .tag-delete {display: inline;}
+.tag-container .tag:hover .tag-delete:hover {cursor: pointer;}
+
+.tag-container .tag-suggest {background-color: #FFF; width: 300px; margin-top: 5px; padding: 0; position: absolute; display: none; z-index: 999;}
+.tag-container .tag-suggest li {list-style: none; margin-left: -30px; margin-right: 5px; padding: 0;}
+.tag-container .tag-suggest li:hover {background-color: #BBCEF1; cursor: pointer;}
+.tag-container .tag-suggest li.selected {background-color: #BBCEF1;}
