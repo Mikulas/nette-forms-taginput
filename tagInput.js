@@ -131,18 +131,19 @@ function TagInputControl() {
 	};
 
 	this.isUnique = function() {
+		var unique = false;
 		$.each(i.rules, function(index, rule) {
-			if (rule.op === ':unique') return true;
+			if (rule.op === ':unique') unique = true;
 		});
-		return false;
+		return unique;
 	};
 
 	this.getMaxLen = function() {
+		var length = 0;
 		$.each(i.rules, function(index, rule) {
-			if ((rule.op === ':maxLength' || rule.op === ':length') && rule.arg > length)
-				return rule.arg;
+			if (rule.op === ':maxLength' || rule.op === ':length') length = rule.op > length ? rule.op : length;
 		});
-		return undefined;
+		return length;
 	};
 
 	this.getDelimiter = function() {
@@ -153,7 +154,7 @@ function TagInputControl() {
 		if (arguments.length === 0) {
 			var value = [];
 			i.tags.find('.tag').each(function() {
-				value.push($(this)[0].firstChild.textContent);
+				value.push($(this)[0].firstChild.textContent); // only tag text without delete
 			});
 			return value;
 		}
@@ -165,7 +166,7 @@ function TagInputControl() {
 
 	this.createTag = function(value) {
 		value = value.trim();
-		if (!value)
+		if (!value || (i.isUnique() && $.inArray(value, i.val()) !== -1))
 			return false;
 
 		var tag = $('<span/>').addClass('tag');
@@ -197,7 +198,7 @@ function TagInputControl() {
 	};
 
 	this.save = function() {
-		i.control.val(i.val().join(','));
+		i.control.val(i.val().join(i.control.data('tag-joiner')));
 		return false;
 	};
 }
@@ -223,7 +224,9 @@ TagInput.create = function(control) {
 	input.helper.keydown(input.onKeyDown);
 	input.helper.bind('paste cut change', input.onChange);
 
-	input.val(input.control.val().split(','));
+	input.rules = eval('[' + (input.control.data('nette-rules') || '') + ']');
+
+	input.val(input.control.val().split(input.control.data('tag-joiner')));
 
 	input.stretchHelperToContainer();
 
@@ -234,8 +237,6 @@ TagInput.create = function(control) {
 	input.helper.focus(input.onFocus);
 	input.helper.blur(input.onBlur);
 	input.control.focus = input.container.focus = input.focus;
-
-	input.rules = eval('[' + (input.control.data('nette-rules') || '') + ']');
 
 	this.inputs.push(input);
 };
