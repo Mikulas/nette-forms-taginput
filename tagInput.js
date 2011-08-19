@@ -85,6 +85,32 @@ function TagInputControl() {
 			i.tags.children('.focus').removeClass('focus');
 			i.stretchHelperToContainer();
 
+		} else if (kb.enter(e) && i.suggest.is(':visible')) {
+			var selected = i.suggest.children('.selected');
+			selected.click();
+			return false;
+
+		} else if (kb.down(e) && i.suggest.is(':visible')) {
+			var selected = i.suggest.children('.selected');
+			if (!selected.length) {
+				i.suggest.children(':first-child').addClass('selected');
+			} else if (selected.next().length) {
+				selected.removeClass('selected');
+				selected.next().addClass('selected');
+			}
+
+			return false;
+		} else if (kb.up(e) && i.suggest.is(':visible')) {
+			var selected = i.suggest.children('.selected');
+			if (selected.prev().length) {
+				selected.removeClass('selected');
+				selected.prev().addClass('selected');
+			} else {
+				i.suggest.hide();
+			}
+
+			return false;
+
 		} else if (kb.del(e) && i.tags.children('.focus').length) {
 			var selected = i.tags.children('.focus');
 			if (selected.next().length)
@@ -118,11 +144,17 @@ function TagInputControl() {
 		}
 	};
 
-	this.onSuggest = function() {
-		if (!i.hasSuggest()) return false;
+	this.onSuggest = function(e) {
+		if (!i.hasSuggest() || kb.control(e)) return false;
+
+		if (i.helper.val().length <= 3) {
+			i.suggest.hide();
+			return false;
+		}
 
 		$.ajax(i.hasSuggest(), {
 			success: function(payload) {
+				i.suggest.data('init', true);
 				i.suggest.children().remove();
 				$.each(payload, function(x, v) {
 					var item = $('<li/>').html(v);
@@ -241,7 +273,7 @@ function TagInputControl() {
 		if (!value || (i.isUnique() && $.inArray(value, i.val()) !== -1))
 			return false;
 
-		if (i.hasSuggest() && !i.newTags()) {
+		if (i.hasSuggest() && !i.newTags() && i.suggest.data('init') === true) {
 			var found = false;
 			i.suggest.children().each(function(x, li) {
 				if (value === $(li).text()) found = true;
