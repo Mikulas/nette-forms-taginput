@@ -40,14 +40,17 @@ function Keyboard() {
 	this.whitespace = function(e) {
 		return $.inArray(e.keyCode, [13, 32]) !== -1;
 	};
-	this.number = function(e) {
+	this.integer = function(e) {
 		var letter = /^[a-i0-9-]+$/; // a-i numpad 1-9, numbers
 		return $.inArray(e.keyCode, [96]) !== -1 // numpad zero
 			|| letter.test(this.keyToChar(e.keyCode));
 	};
+	this.floaty = function(e) {
+		return this.integer(e) || $.inArray(e.keyCode, [190]) !== -1; // point
+	};
 	this.input = function(e) {
 		var letter = /^[a-iA-Z\u00C0-\u02A00-9-]+$/; // a-i numpad 1-9, A-Z letters, accented letters, numbers, hyphen
-		return $.inArray(e.keyCode, [96, 189]) !== -1  // numpad zero, hyphen
+		return $.inArray(e.keyCode, [96, 189, 190]) !== -1  // numpad zero, hyphen, point
 			|| letter.test(this.keyToChar(e.keyCode));
 	};
 
@@ -73,7 +76,9 @@ function TagInputControl() {
 		if (kb.input(e)) { // just writing letters
 			if (i.getMaxLen() !== 0 && i.getMaxLen() === i.tags.children('.tag').length)
 				return false;
-			if (i.isNumeric() && !kb.number(e))
+			else if (i.isNumeric() && !kb.integer(e))
+				return false;
+			else if (i.isFloat() && !kb.floaty(e))
 				return false;
 
 			i.tags.children('.focus').removeClass('focus');
@@ -149,9 +154,17 @@ function TagInputControl() {
 	this.isNumeric = function() {
 		var numeric = false;
 		$.each(i.rules, function(index, rule) {
-			if (rule.op === ':integer' || rule.op === ':float') numeric = true;
+			if (rule.op === ':integer') numeric = true;
 		});
 		return numeric;
+	};
+
+	this.isFloat = function() {
+		var floaty = false;
+		$.each(i.rules, function(index, rule) {
+			if (rule.op === ':float') floaty = true;
+		});
+		return floaty;
 	};
 
 	this.getMaxLen = function() {
