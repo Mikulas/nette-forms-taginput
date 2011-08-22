@@ -207,6 +207,8 @@ function TagInputControl() {
 	};
 
 	this.hasSuggest = function() {
+                if (!i.control.data('tag-suggest'))
+			return false;
 		return i.control.data('tag-suggest').replace('%25filter%25', i.helper.val());
 	};
 
