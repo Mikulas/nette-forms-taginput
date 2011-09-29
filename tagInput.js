@@ -485,3 +485,10 @@ Nette.validateForm = function(sender) {
 	}
 	return true;
 };
+
+
+$(document).ready(function(){
+	$('.frm-tagInput').each(function() {
+		TagInput.create('#'+this.id);
+	});
+});
