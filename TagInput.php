@@ -120,7 +120,7 @@ class TagInput extends TextInput
 			$control->attrs['data-tag-suggest'] = $form->getPresenter()->link($this->renderName, array('word_filter' => '%filter%'));
 		}
 		$container->add($control);
-		$container->add(\Nette\Utils\Html::el('script')->setHtml('TagInput.create("#frm' . $this->form->name . '-' . $this->name . '");'));
+		$container->add(\Nette\Utils\Html::el('script')->setHtml('TagInput.create("#' . $this->getHtmlId() . '");'));
 
 		return $container;
 	}
